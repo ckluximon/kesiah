@@ -312,12 +312,12 @@ async def get_posts(skip: int = 0, limit: int = 20, post_type: Optional[PostType
 
 @api_router.get("/posts/{post_id}", response_model=Dict[str, Any])
 async def get_post(post_id: str, current_user: User = Depends(get_current_user)):
-    post_doc = await db.posts.find_one({"id": post_id})
+    post_doc = await db.posts.find_one({"id": post_id}, {"_id": 0})
     if not post_doc:
         raise HTTPException(status_code=404, detail="Post not found")
     
     # Enrich with user info
-    user_doc = await db.users.find_one({"id": post_doc["user_id"]})
+    user_doc = await db.users.find_one({"id": post_doc["user_id"]}, {"_id": 0})
     post_doc["user"] = {
         "id": user_doc["id"],
         "username": user_doc["username"],
