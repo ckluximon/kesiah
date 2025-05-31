@@ -292,12 +292,12 @@ async def get_posts(skip: int = 0, limit: int = 20, post_type: Optional[PostType
     if post_type:
         filter_query["post_type"] = post_type
     
-    posts_docs = await db.posts.find(filter_query).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+    posts_docs = await db.posts.find(filter_query, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
     
     # Enrich posts with user info
     enriched_posts = []
     for post_doc in posts_docs:
-        user_doc = await db.users.find_one({"id": post_doc["user_id"]})
+        user_doc = await db.users.find_one({"id": post_doc["user_id"]}, {"_id": 0})
         post_with_user = post_doc.copy()
         post_with_user["user"] = {
             "id": user_doc["id"],
