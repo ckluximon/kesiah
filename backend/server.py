@@ -410,6 +410,11 @@ async def join_challenge(challenge_id: str, current_user: User = Depends(get_cur
     await db.challenges.update_one({"id": challenge_id}, {"$push": {"participants": current_user.id}})
     return {"success": True, "message": "Successfully joined challenge"}
 
+# Health check endpoint
+@api_router.get("/health")
+async def health_check():
+    return {"status": "healthy", "service": "UBUNTOO API"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
