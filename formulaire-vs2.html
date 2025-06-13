@@ -1,0 +1,2506 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire Réunion Équipe VS2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            padding: 40px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="60" cy="70" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="30" cy="80" r="2.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="60" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo {
+            width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+            filter: brightness(0) invert(1);
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Barre de progression */
+        .progress-bar {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 15px 40px;
+            border-bottom: 1px solid #e1e5e9;
+            z-index: 100;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: #e1e5e9;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Sauvegarde automatique */
+        .auto-save-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        .auto-save-status.show {
+            opacity: 1;
+        }
+
+        .form-content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            border-left: 5px solid #a8e063;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            background: #a8e063;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #a8e063;
+            box-shadow: 0 0 0 3px rgba(168, 224, 99, 0.1);
+            transform: translateY(-2px);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .ppp-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e1e5e9;
+        }
+
+        .ppp-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 8px 12px;
+            background: #f8f9ff;
+            border-radius: 6px;
+            border: 1px solid #e8eaed;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .ppp-item:hover {
+            border-color: #a8e063;
+            background: #f0f8e8;
+            transform: translateX(5px);
+        }
+
+        .ppp-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            margin-top: 2px;
+            transform: scale(1.1);
+            flex-shrink: 0;
+        }
+
+        .ppp-item span {
+            flex: 1;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e1e5e9;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-item:hover {
+            border-color: #a8e063;
+            background: #f0f8e8;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        /* Compteur de caractères */
+        .char-count {
+            font-size: 11px;
+            color: #666;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .synthese-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e1e5e9;
+        }
+
+        .synthese-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: #f8f9ff;
+            border-radius: 6px;
+            border: 1px solid #e8eaed;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .synthese-item:hover {
+            border-color: #a8e063;
+            background: #f0f8e8;
+            transform: translateX(3px);
+        }
+
+        .synthese-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 12px;
+            transform: scale(1.1);
+            flex-shrink: 0;
+        }
+
+        .synthese-item span {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .consultants-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e1e5e9;
+        }
+
+        .consultant-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: #f8f9ff;
+            border-radius: 6px;
+            border: 1px solid #e8eaed;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .consultant-item:hover {
+            border-color: #a8e063;
+            background: #f0f8e8;
+            transform: translateX(3px);
+        }
+
+        .consultant-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            transform: scale(1.1);
+            flex-shrink: 0;
+        }
+
+        .consultant-item span {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .consultant-item input[type="checkbox"]:checked + span {
+            color: #2c5530;
+            font-weight: 600;
+        }
+
+        /* Styles pour l'ordre du jour amélioré */
+        .template-btn {
+            background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%);
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+            box-shadow: 0 3px 10px rgba(23, 162, 184, 0.3);
+        }
+
+        .template-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.5);
+        }
+
+        .ordre-jour-container {
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e1e5e9;
+            padding: 20px;
+        }
+
+        .points-header {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .add-point-btn, .auto-generate-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-point-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+        }
+
+        .auto-generate-btn {
+            background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+            color: white;
+            box-shadow: 0 3px 10px rgba(111, 66, 193, 0.3);
+        }
+
+        .add-point-btn:hover, .auto-generate-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .points-liste {
+            min-height: 100px;
+        }
+
+        .point-item {
+            background: #f8f9ff;
+            border: 1px solid #e8eaed;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            cursor: grab;
+        }
+
+        .point-item:hover {
+            border-color: #a8e063;
+            transform: translateX(5px);
+        }
+
+        .point-item.dragging {
+            opacity: 0.7;
+            transform: rotate(3deg);
+            cursor: grabbing;
+        }
+
+        .point-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            gap: 10px;
+        }
+
+        .point-numero {
+            font-weight: bold;
+            color: #a8e063;
+            min-width: 25px;
+            font-size: 16px;
+        }
+
+        .drag-handle {
+            color: #999;
+            cursor: grab;
+            user-select: none;
+            font-size: 18px;
+        }
+
+        .drag-handle:hover {
+            color: #a8e063;
+        }
+
+        .point-titre {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-weight: 500;
+        }
+
+        .point-titre:focus {
+            border-color: #a8e063;
+            outline: none;
+        }
+
+        .remove-point-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 5px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .remove-point-btn:hover {
+            background: #ffebee;
+            transform: scale(1.1);
+        }
+
+        .point-description {
+            margin: 0 15px 15px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 13px;
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        .point-description:focus {
+            border-color: #a8e063;
+            outline: none;
+        }
+
+        /* P.P.P. améliorés avec groupes */
+        .ppp-container-enhanced {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e1e5e9;
+        }
+
+        .ppp-groupe {
+            border: 1px solid #e8eaed;
+            border-radius: 8px;
+            padding: 15px;
+            background: #fafbff;
+        }
+
+        .ppp-groupe-titre {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 14px;
+            border-bottom: 1px solid #e8eaed;
+            padding-bottom: 8px;
+        }
+
+        .ppp-item-enhanced {
+            display: flex;
+            align-items: flex-start;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e8eaed;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+
+        .ppp-item-enhanced:hover {
+            border-color: #a8e063;
+            background: #f0f8e8;
+            transform: translateX(3px);
+        }
+
+        .ppp-item-enhanced input[type="checkbox"] {
+            width: auto;
+            margin-right: 12px;
+            margin-top: 2px;
+            transform: scale(1.1);
+            flex-shrink: 0;
+        }
+
+        .ppp-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ppp-titre {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 3px;
+            font-size: 13px;
+        }
+
+        .ppp-description {
+            font-size: 11px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .ppp-item-enhanced input[type="checkbox"]:checked + .ppp-content .ppp-titre {
+            color: #2c5530;
+            font-weight: 600;
+        }
+
+        /* Validation et suggestions */
+        .validation-container {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .validation-icon {
+            font-size: 18px;
+        }
+
+        .validation-text {
+            flex: 1;
+            font-weight: 500;
+            color: #856404;
+        }
+
+        .validation-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .validation-btn {
+            padding: 5px 12px;
+            border: none;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .validation-btn.accept {
+            background: #28a745;
+            color: white;
+        }
+
+        .validation-btn.dismiss {
+            background: #6c757d;
+            color: white;
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 40px -40px -40px -40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .submit-btn, .pdf-btn, .save-btn, .load-btn {
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(168, 224, 99, 0.4);
+        }
+
+        .pdf-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
+        }
+
+        .load-btn {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.4);
+        }
+
+        .ai-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+            box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+        }
+
+        .ai-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.5);
+        }
+
+        .ai-btn:active {
+            transform: translateY(0);
+        }
+
+        .ai-loading {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%) !important;
+            cursor: not-allowed !important;
+        }
+
+        .ai-success {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%) !important;
+        }
+
+        .submit-btn:hover, .pdf-btn:hover, .save-btn:hover, .load-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .submit-btn:hover {
+            box-shadow: 0 8px 25px rgba(168, 224, 99, 0.6);
+        }
+
+        .pdf-btn:hover {
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .save-btn:hover {
+            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.6);
+        }
+
+        .load-btn:hover {
+            box-shadow: 0 8px 25px rgba(155, 89, 182, 0.6);
+        }
+
+        .submit-btn:active, .pdf-btn:active, .save-btn:active, .load-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .container {
+                margin: 10px;
+            }
+
+            .submit-section {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .submit-btn, .pdf-btn, .save-btn, .load-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auto-save-status" id="autoSaveStatus">
+        ✓ Sauvegardé automatiquement
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <svg class="logo" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+                <g fill="white">
+                    <path d="M20 45c-8 0-15-7-15-15s7-15 15-15c4 0 8 2 11 5l-3 3c-2-2-5-4-8-4-6 0-11 5-11 11s5 11 11 11c3 0 6-1 8-4l3 3c-3 3-7 5-11 5z"/>
+                    <path d="M40 45c-8 0-15-7-15-15s7-15 15-15 15 7 15 15-7 15-15 15zm0-26c-6 0-11 5-11 11s5 11 11 11 11-5 11-11-5-11-11-11z"/>
+                    <path d="M75 44h-4V16h4v28z"/>
+                    <path d="M95 45c-8 0-15-7-15-15V16h4v14c0 6 5 11 11 11s11-5 11-11V16h4v14c0 8-7 15-15 15z"/>
+                    <path d="M120 44h-4V16h15c6 0 11 5 11 11s-5 11-11 11h-11v6zm0-10h11c4 0 7-3 7-7s-3-7-7-7h-11v14z"/>
+                    <path d="M155 45c-8 0-15-7-15-15s7-15 15-15 15 7 15 15-7 15-15 15zm0-26c-6 0-11 5-11 11s5 11 11 11 11-5 11-11-5-11-11-11z"/>
+                    <path d="M185 44h-4l-10-17v17h-4V16h4l10 17V16h4v28z"/>
+                </g>
+                <text x="20" y="55" font-family="Arial, sans-serif" font-size="8" fill="white">SOLERYS</text>
+                <text x="80" y="55" font-family="Arial, sans-serif" font-size="6" fill="white">OASYS &amp; Cie</text>
+            </svg>
+            <h1 class="title">RÉUNION ÉQUIPE VS2</h1>
+            <p class="subtitle">Partages des Pratiques Professionnelles</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-container">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">0% complété</div>
+        </div>
+
+        <form class="form-content" id="reunionForm">
+            <!-- Référence du document -->
+            <div class="section" style="margin-bottom: 20px; padding: 20px; background: #fff3cd; border-left-color: #ffc107;">
+                <h2 class="section-title" style="margin-bottom: 15px;">
+                    <span class="section-icon" style="background: #ffc107;">📋</span>
+                    Référence du document
+                </h2>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="reference">Référence <span class="required">*</span></label>
+                    <input type="text" id="reference" name="reference" placeholder="16166/VSI25/jj/mois" required style="font-family: monospace; font-weight: bold; font-size: 16px;">
+                    <div style="font-size: 11px; color: #666; margin-top: 5px;">
+                        Format automatique basé sur la date de réunion : 16166/VSI25/[jour]/[mois]
+                    </div>
+                </div>
+            </div>
+            <!-- Informations générales -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">1</span>
+                    Informations générales
+                </h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date">Date de la réunion <span class="required">*</span></label>
+                        <input type="date" id="date" name="date" required onchange="mettreAJourReference()">
+                    </div>
+                    <div class="form-group">
+                        <label for="horaires">Horaires <span class="required">*</span></label>
+                        <input type="text" id="horaires" name="horaires" placeholder="Ex: 14h00 à 16h30" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="animateur">Animateur <span class="required">*</span></label>
+                        <input type="text" id="animateur" name="animateur" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalite">Modalité <span class="required">*</span></label>
+                        <select id="modalite" name="modalite" required>
+                            <option value="">Sélectionner</option>
+                            <option value="presentiel">Présentiel</option>
+                            <option value="visio">Visioconférence TEAMS</option>
+                            <option value="hybride">Hybride</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sites concernés -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">2</span>
+                    Sites concernés
+                </h2>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="sites" value="strasbourg">
+                        <span>Strasbourg</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="sites" value="haguenau">
+                        <span>Haguenau</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="sites" value="molsheim">
+                        <span>Molsheim</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="sites" value="saverne">
+                        <span>Saverne</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="sites" value="selestat">
+                        <span>Sélestat</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Participants -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">3</span>
+                    Participants
+                </h2>
+                <div class="form-group">
+                    <label>Consultants présents :</label>
+                    <div class="consultants-container">
+                        <label class="consultant-item">
+                            <input type="checkbox" name="consultants_presents" value="Alicia DOUAIR">
+                            <span>Alicia DOUAIR</span>
+                        </label>
+                        <label class="consultant-item">
+                            <input type="checkbox" name="consultants_presents" value="Nathalie TRILLO">
+                            <span>Nathalie TRILLO</span>
+                        </label>
+                        <label class="consultant-item">
+                            <input type="checkbox" name="consultants_presents" value="Elodie ANTOINE">
+                            <span>Elodie ANTOINE</span>
+                        </label>
+                        <label class="consultant-item">
+                            <input type="checkbox" name="consultants_presents" value="Caroline BRACONNIER">
+                            <span>Caroline BRACONNIER</span>
+                        </label>
+                        <label class="consultant-item">
+                            <input type="checkbox" name="consultants_presents" value="Farida BENZIADA">
+                            <span>Farida BENZIADA</span>
+                        </label>
+                        <label class="consultant-item">
+                            <input type="checkbox" name="consultants_presents" value="Michele BENEDICTO">
+                            <span>Michele BENEDICTO</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="actions">Actions décidées</label>
+                    <textarea id="actions" name="actions" placeholder="Actions à mettre en place, responsables, échéances" maxlength="2000"></textarea>
+                    <div class="char-count" id="actionsCount">0/2000</div>
+                </div>
+                <div class="form-group">
+                    <label for="prochaine_reunion">Prochaine réunion</label>
+                    <input type="date" id="prochaine_reunion" name="prochaine_reunion">
+                </div>
+                <div class="form-group">
+                    <label for="points_suivants">Points à aborder lors de la prochaine réunion</label>
+                    <textarea id="points_suivants" name="points_suivants" placeholder="Sujets à prévoir pour la prochaine fois" maxlength="1000"></textarea>
+                    <div class="char-count" id="pointsSuivantsCount">0/1000</div>
+                </div>
+            </div>
+
+            <div class="submit-section">
+                <button type="button" class="load-btn" onclick="chargerFormulaire()">📂 Charger</button>
+                <button type="button" class="save-btn" onclick="sauvegarderFormulaire()">💾 Sauvegarder</button>
+                <button type="button" class="pdf-btn" onclick="genererPDF()">📄 Générer PDF</button>
+                <button type="submit" class="submit-btn">✓ Finaliser le compte-rendu</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal pour charger les données -->
+    <div class="modal" id="modalChargement">
+        <div class="modal-content">
+            <span class="close-btn" onclick="fermerModal()">&times;</span>
+            <div class="modal-header">Charger un formulaire sauvegardé</div>
+            <div id="listeSauvegardes">
+                <p>Aucune sauvegarde trouvée.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let autoSaveTimer;
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            initialiserCompteurs();
+            initialiserProgressBar();
+            initialiserAutoSave();
+            initialiserGestionConsultants();
+            initialiserReference();
+            initialiserOrdreJour();
+            chargerDonneesSauvegardees();
+        });
+
+        // Gestion de l'ordre du jour interactif
+        function initialiserOrdreJour() {
+            // Drag and drop
+            initialiserDragAndDrop();
+            // Validation automatique
+            document.addEventListener('change', validerOrdreJour);
+            // Numérotation automatique
+            mettreAJourNumerotation();
+        }
+
+        function ajouterPoint() {
+            const pointsListe = document.getElementById('points-liste');
+            const nouveauIndex = pointsListe.children.length + 1;
+            
+            const pointHTML = `
+                <div class="point-item" data-index="${nouveauIndex}">
+                    <div class="point-header">
+                        <span class="point-numero">${nouveauIndex}.</span>
+                        <span class="drag-handle" title="Glisser pour réorganiser">⋮⋮</span>
+                        <input type="text" class="point-titre" placeholder="Titre du point" maxlength="100">
+                        <button type="button" class="remove-point-btn" onclick="supprimerPoint(this)" title="Supprimer ce point">❌</button>
+                    </div>
+                    <textarea class="point-description" placeholder="Description détaillée (optionnel)" maxlength="300"></textarea>
+                </div>
+            `;
+            
+            pointsListe.insertAdjacentHTML('beforeend', pointHTML);
+            initialiserDragAndDrop();
+            mettreAJourNumerotation();
+            
+            // Focus sur le nouveau point
+            const nouveauPoint = pointsListe.lastElementChild.querySelector('.point-titre');
+            nouveauPoint.focus();
+        }
+
+        function supprimerPoint(bouton) {
+            const pointItem = bouton.closest('.point-item');
+            pointItem.remove();
+            mettreAJourNumerotation();
+            validerOrdreJour();
+        }
+
+        function mettreAJourNumerotation() {
+            const points = document.querySelectorAll('.point-item');
+            points.forEach((point, index) => {
+                const numero = point.querySelector('.point-numero');
+                numero.textContent = `${index + 1}.`;
+                point.setAttribute('data-index', index + 1);
+            });
+        }
+
+        function initialiserDragAndDrop() {
+            const pointsListe = document.getElementById('points-liste');
+            let draggedElement = null;
+            
+            document.querySelectorAll('.drag-handle').forEach(handle => {
+                handle.addEventListener('mousedown', function(e) {
+                    draggedElement = this.closest('.point-item');
+                    draggedElement.classList.add('dragging');
+                    draggedElement.draggable = true;
+                });
+            });
+            
+            document.querySelectorAll('.point-item').forEach(item => {
+                item.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+                
+                item.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    if (draggedElement && draggedElement !== this) {
+                        const rect = this.getBoundingClientRect();
+                        const midY = rect.top + rect.height / 2;
+                        if (e.clientY < midY) {
+                            this.parentNode.insertBefore(draggedElement, this);
+                        } else {
+                            this.parentNode.insertBefore(draggedElement, this.nextSibling);
+                        }
+                    }
+                });
+                
+                item.addEventListener('dragend', function() {
+                    if (draggedElement) {
+                        draggedElement.classList.remove('dragging');
+                        draggedElement.draggable = false;
+                        draggedElement = null;
+                        mettreAJourNumerotation();
+                    }
+                });
+            });
+        }
+
+        function genererOrdreJourAuto() {
+            const pppSelectionnes = Array.from(document.querySelectorAll('input[name="ppp"]:checked'))
+                .map(cb => cb.value);
+            
+            const pointsListe = document.getElementById('points-liste');
+            pointsListe.innerHTML = ''; // Vider la liste existante
+            
+            // Points standard
+            const pointsStandard = [
+                { titre: "Ouverture et tour de table", description: "Accueil des participants, présentation de l'ordre du jour" },
+                { titre: "Bilan de la période écoulée", description: "Point sur les actions menées depuis la dernière réunion" }
+            ];
+            
+            // Points basés sur les P.P.P. sélectionnés
+            const pointsPPP = {
+                'etat_avancement': { titre: "État d'avancement des accompagnements VS2", description: "Suivi des dossiers en cours, nouveaux entrants, bilans d'étape" },
+                'retours_experience': { titre: "Retours d'expérience", description: "Partage des situations marquantes, réussites et difficultés" },
+                'questions_outils': { titre: "Questions techniques et outils", description: "Clarifications sur les modalités, harmonisation des pratiques" },
+                'points_vigilance': { titre: "Points de vigilance", description: "Situations à risque identifiées, mesures préventives" },
+                'bonnes_pratiques': { titre: "Bonnes pratiques", description: "Initiatives locales efficaces, méthodes innovantes" },
+                'situation_problematique': { titre: "Analyse de situation complexe", description: "Étude de cas collective, recherche de solutions" },
+                'bilan_ateliers': { titre: "Bilan des ateliers collectifs", description: "Retours sur les ateliers animés (CV, image pro, etc.)" },
+                'nouvelle_etape': { titre: "Préparation des prochaines étapes", description: "Planification des restitutions, bilans finaux" },
+                'lien_dispositifs': { titre: "Articulation avec autres dispositifs", description: "Coordination UES, CRE, complémentarité des mesures" }
+            };
+            
+            // Points de clôture
+            const pointsCloture = [
+                { titre: "Actions décidées et planning", description: "Synthèse des décisions, attribution des responsabilités" },
+                { titre: "Prochaine réunion", description: "Date, modalités, points à prévoir" }
+            ];
+            
+            // Construire la liste complète
+            let tousLesPoints = [...pointsStandard];
+            
+            pppSelectionnes.forEach(ppp => {
+                if (pointsPPP[ppp]) {
+                    tousLesPoints.push(pointsPPP[ppp]);
+                }
+            });
+            
+            tousLesPoints = [...tousLesPoints, ...pointsCloture];
+            
+            // Créer les éléments HTML
+            tousLesPoints.forEach((point, index) => {
+                const pointHTML = `
+                    <div class="point-item" data-index="${index + 1}">
+                        <div class="point-header">
+                            <span class="point-numero">${index + 1}.</span>
+                            <span class="drag-handle" title="Glisser pour réorganiser">⋮⋮</span>
+                            <input type="text" class="point-titre" placeholder="Titre du point" maxlength="100" value="${point.titre}">
+                            <button type="button" class="remove-point-btn" onclick="supprimerPoint(this)" title="Supprimer ce point">❌</button>
+                        </div>
+                        <textarea class="point-description" placeholder="Description détaillée (optionnel)" maxlength="300">${point.description}</textarea>
+                    </div>
+                `;
+                pointsListe.insertAdjacentHTML('beforeend', pointHTML);
+            });
+            
+            initialiserDragAndDrop();
+            alert(`✅ Ordre du jour généré automatiquement !\n${tousLesPoints.length} points créés basés sur ${pppSelectionnes.length} thème(s) P.P.P.`);
+        }
+
+        function ouvrirTemplates() {
+            const templates = {
+                'reunion_bilan': {
+                    nom: 'Réunion bilan mensuel',
+                    points: [
+                        { titre: "Ouverture et actualités", description: "Tour de table, informations importantes" },
+                        { titre: "Bilan quantitatif", description: "Chiffres clés, indicateurs, taux de satisfaction" },
+                        { titre: "Retours terrain", description: "Expériences marquantes, difficultés rencontrées" },
+                        { titre: "Points d'amélioration", description: "Suggestions, ajustements à apporter" },
+                        { titre: "Planning et perspectives", description: "Actions à venir, échéances importantes" }
+                    ]
+                },
+                'reunion_suivi': {
+                    nom: 'Réunion de suivi opérationnel',
+                    points: [
+                        { titre: "Point sur les accompagnements en cours", description: "État d'avancement, nouvelles entrées" },
+                        { titre: "Situations complexes", description: "Cas nécessitant un regard collectif" },
+                        { titre: "Outils et méthodes", description: "Questions techniques, bonnes pratiques" },
+                        { titre: "Coordination inter-sites", description: "Harmonisation, partage d'expériences" },
+                        { titre: "Actions et suivi", description: "Décisions, responsabilités, échéances" }
+                    ]
+                },
+                'reunion_evaluation': {
+                    nom: 'Réunion d\'évaluation qualité',
+                    points: [
+                        { titre: "Bilan satisfaction bénéficiaires", description: "Retours questionnaires, témoignages" },
+                        { titre: "Analyse des résultats", description: "Taux d'insertion, formations, créations d'activité" },
+                        { titre: "Points de vigilance", description: "Difficultés identifiées, risques de décrochage" },
+                        { titre: "Pistes d'amélioration", description: "Propositions d'évolution du dispositif" },
+                        { titre: "Plan d'action qualité", description: "Mesures correctives, indicateurs de suivi" }
+                    ]
+                }
+            };
+            
+            let choixTemplate = prompt(`Choisissez un template d'ordre du jour :
+            
+1 - ${templates.reunion_bilan.nom}
+2 - ${templates.reunion_suivi.nom}  
+3 - ${templates.reunion_evaluation.nom}
+
+Tapez 1, 2 ou 3 :`);
+            
+            let templateChoisi;
+            switch(choixTemplate) {
+                case '1': templateChoisi = templates.reunion_bilan; break;
+                case '2': templateChoisi = templates.reunion_suivi; break;
+                case '3': templateChoisi = templates.reunion_evaluation; break;
+                default: return;
+            }
+            
+            // Appliquer le template
+            const pointsListe = document.getElementById('points-liste');
+            pointsListe.innerHTML = '';
+            
+            templateChoisi.points.forEach((point, index) => {
+                const pointHTML = `
+                    <div class="point-item" data-index="${index + 1}">
+                        <div class="point-header">
+                            <span class="point-numero">${index + 1}.</span>
+                            <span class="drag-handle" title="Glisser pour réorganiser">⋮⋮</span>
+                            <input type="text" class="point-titre" placeholder="Titre du point" maxlength="100" value="${point.titre}">
+                            <button type="button" class="remove-point-btn" onclick="supprimerPoint(this)" title="Supprimer ce point">❌</button>
+                        </div>
+                        <textarea class="point-description" placeholder="Description détaillée (optionnel)" maxlength="300">${point.description}</textarea>
+                    </div>
+                `;
+                pointsListe.insertAdjacentHTML('beforeend', pointHTML);
+            });
+            
+            initialiserDragAndDrop();
+            alert(`✅ Template "${templateChoisi.nom}" appliqué avec succès !`);
+        }
+
+        function validerOrdreJour() {
+            const points = document.querySelectorAll('.point-item');
+            const pppSelectionnes = document.querySelectorAll('input[name="ppp"]:checked');
+            const validationContainer = document.getElementById('validationOrdreJour');
+            
+            let suggestions = [];
+            
+            // Vérifier si on a des P.P.P. sans points correspondants
+            if (pppSelectionnes.length > 0 && points.length < 3) {
+                suggestions.push("Vous avez sélectionné des P.P.P. mais peu de points à l'ordre du jour.");
+            }
+            
+            // Vérifier les points vides
+            const pointsVides = Array.from(points).filter(point => 
+                !point.querySelector('.point-titre').value.trim()
+            );
+            
+            if (pointsVides.length > 0) {
+                suggestions.push(`${pointsVides.length} point(s) sans titre.`);
+            }
+            
+            if (suggestions.length > 0) {
+                validationContainer.style.display = 'block';
+                validationContainer.querySelector('.validation-text').textContent = suggestions.join(' ');
+            } else {
+                validationContainer.style.display = 'none';
+            }
+        }
+
+        function obtenirOrdreJour() {
+            const points = document.querySelectorAll('.point-item');
+            const ordreJour = [];
+            
+            points.forEach(point => {
+                const titre = point.querySelector('.point-titre').value.trim();
+                const description = point.querySelector('.point-description').value.trim();
+                
+                if (titre) {
+                    ordreJour.push({
+                        titre: titre,
+                        description: description
+                    });
+                }
+            });
+            
+            return ordreJour;
+        }
+
+        // Gestion de la référence automatique
+        function initialiserReference() {
+            // Génération de la référence au chargement
+            mettreAJourReference();
+        }
+
+        function mettreAJourReference() {
+            const dateInput = document.getElementById('date');
+            const referenceInput = document.getElementById('reference');
+            
+            if (dateInput.value) {
+                const date = new Date(dateInput.value);
+                const jour = date.getDate().toString().padStart(2, '0');
+                const mois = (date.getMonth() + 1).toString().padStart(2, '0');
+                
+                const nouvelleReference = `16166/VSI25/${jour}/${mois}`;
+                referenceInput.value = nouvelleReference;
+            } else {
+                // Référence par défaut avec date du jour
+                const aujourdhui = new Date();
+                const jour = aujourdhui.getDate().toString().padStart(2, '0');
+                const mois = (aujourdhui.getMonth() + 1).toString().padStart(2, '0');
+                
+                referenceInput.value = `16166/VSI25/${jour}/${mois}`;
+            }
+        }
+
+        // Gestion automatique des consultants présents/absents
+        function initialiserGestionConsultants() {
+            const checkboxes = document.querySelectorAll('input[name="consultants_presents"]');
+            const absentsField = document.getElementById('participants_absents');
+            
+            function mettreAJourAbsents() {
+                const tousConsultants = [
+                    'Alicia DOUAIR',
+                    'Nathalie TRILLO', 
+                    'Elodie ANTOINE',
+                    'Caroline BRACONNIER',
+                    'Farida BENZIADA',
+                    'Michele BENEDICTO'
+                ];
+                
+                const presents = Array.from(checkboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
+                
+                const absents = tousConsultants.filter(consultant => !presents.includes(consultant));
+                
+                if (absents.length > 0) {
+                    absentsField.value = 'Consultants absents :\n• ' + absents.join('\n• ');
+                } else {
+                    absentsField.value = 'Tous les consultants sont présents.';
+                }
+            }
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', mettreAJourAbsents);
+            });
+            
+            // Initialisation
+            mettreAJourAbsents();
+        }
+
+        // Compteurs de caractères
+        function initialiserCompteurs() {
+            const textareas = [
+                { id: 'intervenants_solerys', countId: 'intervenantsSolerysCount' },
+                { id: 'intervenants_exterieurs', countId: 'intervenantsExterieursCount' },
+                { id: 'synthese_reunion', countId: 'syntheseReunionCount' },
+                { id: 'points_cles', countId: 'pointsClesCount' },
+                { id: 'questions_reponses', countId: 'questionsReponsesCount' },
+                { id: 'observations', countId: 'observationsCount' },
+                { id: 'actions', countId: 'actionsCount' },
+                { id: 'points_suivants', countId: 'pointsSuivantsCount' }
+            ];
+
+            textareas.forEach(textarea => {
+                const element = document.getElementById(textarea.id);
+                const counter = document.getElementById(textarea.countId);
+                
+                element.addEventListener('input', function() {
+                    const count = this.value.length;
+                    const max = this.getAttribute('maxlength');
+                    counter.textContent = `${count}/${max}`;
+                    
+                    if (count > max * 0.9) {
+                        counter.style.color = '#e74c3c';
+                    } else if (count > max * 0.7) {
+                        counter.style.color = '#f39c12';
+                    } else {
+                        counter.style.color = '#666';
+                    }
+                });
+            });
+        }
+
+        // Barre de progression
+        function initialiserProgressBar() {
+            const inputs = document.querySelectorAll('input[required], textarea[required], select[required]');
+            
+            function updateProgress() {
+                let filledCount = 0;
+                inputs.forEach(input => {
+                    if (input.type === 'checkbox' || input.type === 'radio') {
+                        if (input.checked) filledCount++;
+                    } else if (input.value.trim() !== '') {
+                        filledCount++;
+                    }
+                });
+                
+                const percentage = Math.round((filledCount / inputs.length) * 100);
+                document.getElementById('progressFill').style.width = percentage + '%';
+                document.getElementById('progressText').textContent = percentage + '% complété';
+            }
+
+            inputs.forEach(input => {
+                input.addEventListener('input', updateProgress);
+                input.addEventListener('change', updateProgress);
+            });
+            
+            updateProgress();
+        }
+
+        // Sauvegarde automatique
+        function initialiserAutoSave() {
+            const form = document.getElementById('reunionForm');
+            
+            form.addEventListener('input', function() {
+                clearTimeout(autoSaveTimer);
+                autoSaveTimer = setTimeout(sauvegardeAuto, 2000);
+            });
+        }
+
+        function sauvegardeAuto() {
+            const formData = obtenirDonneesFormulaire();
+            const timestamp = new Date().toISOString();
+            
+            formData.autoSave = true;
+            formData.timestamp = timestamp;
+            
+            // Sauvegarde dans le stockage local (simulation)
+            const savedData = JSON.stringify(formData);
+            
+            // Affichage du statut
+            const status = document.getElementById('autoSaveStatus');
+            status.classList.add('show');
+            setTimeout(() => {
+                status.classList.remove('show');
+            }, 2000);
+        }
+
+        // Obtenir les données du formulaire
+        function obtenirDonneesFormulaire() {
+            const form = document.getElementById('reunionForm');
+            const formData = new FormData(form);
+            
+            return {
+                reference: formData.get('reference'),
+                date: formData.get('date'),
+                horaires: formData.get('horaires'),
+                animateur: formData.get('animateur'),
+                modalite: formData.get('modalite'),
+                sites: formData.getAll('sites'),
+                consultants_presents: formData.getAll('consultants_presents'),
+                participants_absents: formData.get('participants_absents'),
+                intervenants_solerys: formData.get('intervenants_solerys'),
+                intervenants_exterieurs: formData.get('intervenants_exterieurs'),
+                ordre_jour: obtenirOrdreJour(),
+                ppp: formData.getAll('ppp'),
+                points_synthese: formData.getAll('points_synthese'),
+                synthese_reunion: formData.get('synthese_reunion'),
+                points_cles: formData.get('points_cles'),
+                questions_reponses: formData.get('questions_reponses'),
+                observations: formData.get('observations'),
+                actions: formData.get('actions'),
+                prochaine_reunion: formData.get('prochaine_reunion'),
+                points_suivants: formData.get('points_suivants')
+            };
+        }
+
+        // Sauvegarder le formulaire
+        function sauvegarderFormulaire() {
+            const data = obtenirDonneesFormulaire();
+            const timestamp = new Date().toISOString();
+            const nom = `Réunion_${data.date || 'sans_date'}_${timestamp.split('T')[0]}`;
+            
+            data.nom = nom;
+            data.timestamp = timestamp;
+            
+            // Simulation de sauvegarde
+            const btn = document.querySelector('.save-btn');
+            const originalText = btn.textContent;
+            
+            btn.textContent = '💾 Sauvegarde...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.textContent = '✓ Sauvegardé !';
+                btn.style.background = 'linear-gradient(135deg, #27ae60 0%, #2ecc71 100%)';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)';
+                    btn.disabled = false;
+                }, 2000);
+            }, 1000);
+        }
+
+        // Charger un formulaire
+        function chargerFormulaire() {
+            document.getElementById('modalChargement').style.display = 'block';
+            chargerListeSauvegardes();
+        }
+
+        function chargerListeSauvegardes() {
+            // Simulation de sauvegardes existantes
+            const sauvegardes = [
+                {
+                    nom: 'Réunion_2024-12-15_équipe_complète',
+                    date: '2024-12-15',
+                    timestamp: '2024-12-15T14:30:00',
+                    animateur: 'Marie Dubois'
+                },
+                {
+                    nom: 'Réunion_2024-12-10_bilan_trimestre',
+                    date: '2024-12-10',
+                    timestamp: '2024-12-10T09:15:00',
+                    animateur: 'Jean Martin'
+                }
+            ];
+
+            const liste = document.getElementById('listeSauvegardes');
+            
+            if (sauvegardes.length === 0) {
+                liste.innerHTML = '<p>Aucune sauvegarde trouvée.</p>';
+                return;
+            }
+
+            liste.innerHTML = sauvegardes.map((save, index) => `
+                <div class="saved-form-item" onclick="chargerSauvegarde(${index})">
+                    <div class="saved-form-date">${save.nom}</div>
+                    <div class="saved-form-info">
+                        Date: ${save.date} | Animateur: ${save.animateur}<br>
+                        Sauvegardé le: ${new Date(save.timestamp).toLocaleString('fr-FR')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function chargerSauvegarde(index) {
+            // Simulation du chargement
+            fermerModal();
+            
+            const btn = document.querySelector('.load-btn');
+            const originalText = btn.textContent;
+            
+            btn.textContent = '📂 Chargement...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.textContent = '✓ Chargé !';
+                btn.style.background = 'linear-gradient(135deg, #27ae60 0%, #2ecc71 100%)';
+                
+                // Remplir quelques champs pour la démonstration
+                document.getElementById('date').value = '2024-12-15';
+                mettreAJourReference(); // Mettre à jour la référence
+                document.getElementById('animateur').value = 'Marie Dubois';
+                document.getElementById('modalite').value = 'hybride';
+                document.querySelector('input[value="strasbourg"]').checked = true;
+                document.querySelector('input[value="haguenau"]').checked = true;
+                document.querySelector('input[value="Alicia DOUAIR"]').checked = true;
+                document.querySelector('input[value="Nathalie TRILLO"]').checked = true;
+                document.querySelector('input[value="Caroline BRACONNIER"]').checked = true;
+                document.getElementById('intervenants_solerys').value = 'Marie Dubois (animateur)';
+                document.getElementById('intervenants_exterieurs').value = 'Pierre Leblanc (Pôle Emploi)';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = 'linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%)';
+                    btn.disabled = false;
+                }, 2000);
+            }, 1000);
+        }
+
+        function fermerModal() {
+            document.getElementById('modalChargement').style.display = 'none';
+        }
+
+        function chargerDonneesSauvegardees() {
+            // Au chargement de la page, vérifier s'il y a des données auto-sauvegardées
+            // Cette fonction pourrait récupérer des données depuis le localStorage
+        }
+
+        // Génération de synthèse par IA
+        function genererSyntheseIA() {
+            const aiBtn = document.querySelector('.ai-btn');
+            const originalText = aiBtn.textContent;
+            
+            // Vérifier si les informations de base sont remplies
+            const data = obtenirDonneesFormulaire();
+            if (!data.date || !data.animateur || !data.ordre_jour || data.ordre_jour.length === 0) {
+                alert('⚠️ Veuillez d\'abord remplir les informations de base (date, animateur, ordre du jour) pour que l\'IA puisse générer une synthèse pertinente.');
+                return;
+            }
+            
+            // Animation de chargement
+            aiBtn.textContent = '🤖 Génération...';
+            aiBtn.classList.add('ai-loading');
+            aiBtn.disabled = true;
+            
+            // Simulation de l'appel à l'IA
+            setTimeout(() => {
+                genererSyntheseComplete(data);
+                
+                aiBtn.textContent = '✅ Généré !';
+                aiBtn.classList.remove('ai-loading');
+                aiBtn.classList.add('ai-success');
+                
+                setTimeout(() => {
+                    aiBtn.textContent = originalText;
+                    aiBtn.classList.remove('ai-success');
+                    aiBtn.disabled = false;
+                }, 2000);
+            }, 3000); // Simule 3 secondes de traitement IA
+        }
+
+        function genererSyntheseComplete(data) {
+            // Récupération des points de synthèse prévus dans l'ordre du jour
+            const pointsSyntheseOrganises = Array.from(document.querySelectorAll('input[name="points_synthese"]:checked'))
+                .map(checkbox => checkbox.value);
+            
+            // Analyse des données pour générer une synthèse intelligente
+            const pppSelectionnes = data.ppp;
+            const sitesParticipants = data.sites.length;
+            const dateReunion = new Date(data.date).toLocaleDateString('fr-FR');
+            const presentsList = data.intervenants_solerys ? data.intervenants_solerys.split('\n').filter(p => p.trim()).length : 0;
+            const externesListe = data.intervenants_exterieurs ? data.intervenants_exterieurs.split('\n').filter(p => p.trim()).length : 0;
+            const consultantsPresents = data.consultants_presents ? data.consultants_presents.length : 0;
+            const totalPresents = presentsList + externesListe + consultantsPresents;
+            
+            // Génération de la synthèse générale
+            let syntheseGenerale = genererSyntheseGenerale(data, pointsSyntheseOrganises);
+            
+            // Génération des points clés
+            let pointsCles = genererPointsCles(pppSelectionnes, pointsSyntheseOrganises);
+            
+            // Génération des questions/réponses
+            let questionsReponses = genererQuestionsReponses(pppSelectionnes);
+            
+            // Génération des observations
+            let observations = genererObservations(data.modalite, sitesParticipants, totalPresents, presentsList, externesListe, consultantsPresents);
+            
+            // Remplissage intelligent des champs (compléter sans écraser)
+            const syntheseField = document.getElementById('synthese_reunion');
+            if (!syntheseField.value.trim()) {
+                syntheseField.value = syntheseGenerale;
+            } else {
+                // Si du contenu existe, proposer de le compléter
+                syntheseField.value += "\n\n" + "=== COMPLÉMENT GÉNÉRÉ PAR IA ===\n" + syntheseGenerale;
+            }
+            
+            const pointsClesField = document.getElementById('points_cles');
+            if (!pointsClesField.value.trim()) {
+                pointsClesField.value = pointsCles;
+            } else {
+                pointsClesField.value += "\n" + pointsCles;
+            }
+            
+            const questionsField = document.getElementById('questions_reponses');
+            if (!questionsField.value.trim()) {
+                questionsField.value = questionsReponses;
+            } else {
+                questionsField.value += "\n\n" + questionsReponses;
+            }
+            
+            const observationsField = document.getElementById('observations');
+            if (!observationsField.value.trim()) {
+                observationsField.value = observations;
+            } else {
+                observationsField.value += "\n" + observations;
+            }
+            
+            // Mise à jour des compteurs
+            ['synthese_reunion', 'points_cles', 'questions_reponses', 'observations'].forEach(id => {
+                const element = document.getElementById(id);
+                const event = new Event('input');
+                element.dispatchEvent(event);
+            });
+            
+            // Scroll vers la section synthèse
+            document.querySelector('.section:nth-child(7)').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+            
+            // Message de confirmation
+            const nbPointsGeneres = pointsSyntheseOrganises.length;
+            const nbPointsOrdreJour = data.ordre_jour.length;
+            if (nbPointsGeneres > 0) {
+                setTimeout(() => {
+                    alert(`🤖 Synthèse générée avec succès !\n\n✅ Analyse de ${pointsSyntheseOrganises.length} point(s) prévu(s)\n✅ ${pppSelectionnes.length} thème(s) P.P.P. traité(s)\n✅ ${nbPointsOrdreJour} point(s) d'ordre du jour analysé(s)\n✅ ${sitesParticipants} site(s) participant(s)`);
+                }, 500);
+            } else {
+                alert('⚠️ Veuillez sélectionner au moins un point à traiter dans la synthèse.');
+            }
+        }
+
+        function genererSyntheseGenerale(data, pointsSynthese) {
+            const modaliteTexte = {
+                'presentiel': 'en présentiel',
+                'visio': 'en visioconférence',
+                'hybride': 'en format hybride'
+            };
+            
+            const dateReunion = new Date(data.date).toLocaleDateString('fr-FR', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            let synthese = `SYNTHÈSE DE LA RÉUNION D'ÉQUIPE VS2\n\n`;
+            synthese += `📅 Réunion du ${dateReunion}\n`;
+            synthese += `👥 Animée par ${data.animateur || '[Animateur]'} ${modaliteTexte[data.modalite] || ''}\n`;
+            synthese += `🏢 Sites participants : ${data.sites.join(', ') || 'Non spécifiés'}\n`;
+            synthese += `📋 Référence : ${data.reference || 'Non renseignée'}\n\n`;
+            
+            synthese += `📋 ORDRE DU JOUR TRAITÉ :\n`;
+            if (data.ordre_jour && data.ordre_jour.length > 0) {
+                data.ordre_jour.forEach((point, index) => {
+                    synthese += `${index + 1}. ${point.titre}\n`;
+                    if (point.description) {
+                        synthese += `   ${point.description}\n`;
+                    }
+                });
+                synthese += `\n`;
+            } else {
+                synthese += `• Ordre du jour non détaillé\n\n`;
+            }
+            
+            synthese += `📊 DÉROULEMENT DE LA SÉANCE :\n\n`;
+            
+            if (pointsSynthese.includes('chiffres')) {
+                synthese += `📊 INDICATEURS ET CHIFFRES CLÉS :\n`;
+                synthese += `• Présentation des statistiques d'activité VS2\n`;
+                synthese += `• Analyse des taux de satisfaction et indicateurs de performance\n`;
+                synthese += `• Suivi des objectifs quantitatifs et qualitatifs\n\n`;
+            }
+            
+            if (pointsSynthese.includes('echanges_ppp')) {
+                synthese += `💭 ÉCHANGES SUR LES PRATIQUES PROFESSIONNELLES :\n`;
+                if (data.ppp.length > 0) {
+                    synthese += `Les équipes ont échangé sur ${data.ppp.length} thématique(s) :\n`;
+                    data.ppp.forEach(ppp => {
+                        const themes = {
+                            'etat_avancement': '• État d\'avancement des accompagnements VS2',
+                            'retours_experience': '• Retours d\'expérience des professionnels',
+                            'questions_outils': '• Questions sur les outils et modalités',
+                            'points_vigilance': '• Points de vigilance identifiés',
+                            'bonnes_pratiques': '• Partage de bonnes pratiques',
+                            'situation_problematique': '• Analyse collective de situations',
+                            'bilan_ateliers': '• Bilan des ateliers collectifs',
+                            'nouvelle_etape': '• Préparation des prochaines étapes',
+                            'lien_dispositifs': '• Articulation avec autres dispositifs'
+                        };
+                        synthese += themes[ppp] + '\n';
+                    });
+                    synthese += '\n';
+                } else {
+                    synthese += `• Échanges généraux sur les pratiques d'accompagnement\n`;
+                    synthese += `• Partage d'expériences entre consultants\n\n`;
+                }
+            }
+            
+            if (pointsSynthese.includes('questions_techniques')) {
+                synthese += `❓ QUESTIONS TECHNIQUES ET CLARIFICATIONS :\n`;
+                synthese += `• Réponses aux questions opérationnelles\n`;
+                synthese += `• Clarifications sur les procédures\n`;
+                synthese += `• Harmonisation des pratiques entre sites\n\n`;
+            }
+            
+            if (pointsSynthese.includes('organisation')) {
+                synthese += `🏢 ASPECTS ORGANISATIONNELS :\n`;
+                synthese += `• Coordination entre les ${data.sites.length} sites participants\n`;
+                synthese += `• Questions logistiques et organisationnelles\n`;
+                synthese += `• Optimisation des processus d'accompagnement\n\n`;
+            }
+            
+            if (pointsSynthese.includes('communication')) {
+                synthese += `📢 COMMUNICATION ET VALORISATION :\n`;
+                synthese += `• Actions de communication prévues\n`;
+                synthese += `• Valorisation des témoignages bénéficiaires\n`;
+                synthese += `• Coordination avec les partenaires\n\n`;
+            }
+            
+            if (pointsSynthese.includes('divers')) {
+                synthese += `💡 POINTS DIVERS ET PERSPECTIVES :\n`;
+                synthese += `• Sujets émergents abordés en fin de séance\n`;
+                synthese += `• Perspectives d'évolution du dispositif\n`;
+                synthese += `• Suggestions et propositions d'amélioration\n\n`;
+            }
+            
+            synthese += `🎯 BILAN GÉNÉRAL :\n`;
+            synthese += `La réunion s'est déroulée selon l'ordre du jour prévu avec ${data.ordre_jour.length} point(s) traité(s). `;
+            synthese += `L'animation ${modaliteTexte[data.modalite] || ''} a facilité la participation de tous les sites. `;
+            synthese += `Les discussions ont renforcé la cohésion d'équipe et l'harmonisation des pratiques professionnelles.`;
+            
+            return synthese;
+        }
+
+        function genererPointsCles(pppSelectionnes, pointsSynthese) {
+            let pointsCles = "POINTS CLÉS RETENUS :\n\n";
+            
+            let points = [];
+            
+            if (pointsSynthese.includes('chiffres')) {
+                points.push("📈 Indicateurs VS2 : suivi des objectifs et analyse de la performance");
+            }
+            
+            if (pointsSynthese.includes('echanges_ppp') && pppSelectionnes.length > 0) {
+                points.push(`🤝 Échanges P.P.P. : ${pppSelectionnes.length} thématique(s) approfondie(s) collectivement`);
+            }
+            
+            if (pointsSynthese.includes('questions_techniques')) {
+                points.push("🔧 Clarifications techniques : harmonisation des pratiques et outils");
+            }
+            
+            if (pointsSynthese.includes('organisation')) {
+                points.push("⚙️ Coordination renforcée : amélioration des processus inter-sites");
+            }
+            
+            if (pointsSynthese.includes('communication')) {
+                points.push("📣 Communication : valorisation des actions et témoignages");
+            }
+            
+            if (points.length === 0) {
+                points.push("🎯 Échanges constructifs sur les pratiques d'accompagnement VS2");
+                points.push("💪 Renforcement de la cohésion d'équipe");
+                points.push("📋 Amélioration continue des processus");
+            }
+            
+            points.forEach((point, index) => {
+                pointsCles += `• ${point}\n`;
+            });
+            
+            return pointsCles;
+        }
+
+        function genererQuestionsReponses(pppSelectionnes) {
+            const questionsBase = [
+                {
+                    q: "Comment améliorer le suivi des bénéficiaires en difficulté ?",
+                    r: "Mise en place d'un suivi renforcé avec des contacts plus fréquents et adaptation des modalités selon les besoins spécifiques."
+                },
+                {
+                    q: "Quelle procédure suivre en cas d'absence prolongée ?",
+                    r: "Contact dans les 48h, courrier de relance, puis signalement au prescripteur si pas de retour sous 8 jours."
+                },
+                {
+                    q: "Comment harmoniser les pratiques d'évaluation ?",
+                    r: "Utilisation systématique des grilles communes et organisation de séances de calibrage régulières."
+                },
+                {
+                    q: "Gestion des bénéficiaires avec difficultés numériques ?",
+                    r: "Privilégier les supports papier adaptés et accompagnement progressif au numérique selon le niveau."
+                }
+            ];
+            
+            let qr = "QUESTIONS/RÉPONSES IMPORTANTES :\n\n";
+            
+            // Sélection de 2-3 questions pertinentes
+            const questionsSelectionnees = questionsBase.slice(0, 3);
+            
+            questionsSelectionnees.forEach((item, index) => {
+                qr += `❓ ${item.q}\n`;
+                qr += `✅ ${item.r}\n\n`;
+            });
+            
+            if (pppSelectionnes.includes('questions_outils')) {
+                qr += `❓ Questions spécifiques sur les outils VS2 ?\n`;
+                qr += `✅ Clarifications apportées sur l'utilisation des outils d'évaluation et modalités de reporting.\n\n`;
+            }
+            
+            return qr;
+        }
+
+        function genererObservations(modalite, nbSites, totalPresents, intervenantsSolerys, intervenantsExternes, consultantsPresents) {
+            const modaliteTexte = {
+                'presentiel': 'présentiel',
+                'visio': 'visioconférence',
+                'hybride': 'hybride'
+            };
+            
+            let observations = "OBSERVATIONS ET REMARQUES :\n\n";
+            
+            observations += `🎭 PRÉSENCE ET PARTICIPATION :\n`;
+            observations += `• Réunion en format ${modaliteTexte[modalite] || 'non spécifié'} bien organisée\n`;
+            observations += `• ${totalPresents} personne(s) présente(s) au total :\n`;
+            observations += `  - ${consultantsPresents} consultant(s) VS2 présent(s)\n`;
+            observations += `  - ${intervenantsSolerys} intervenant(s) Solerys\n`;
+            if (intervenantsExternes > 0) {
+                observations += `  - ${intervenantsExternes} intervenant(s) extérieur(s)\n`;
+            }
+            observations += `• Représentation de ${nbSites} site(s), favorisant les échanges inter-territoriaux\n\n`;
+            
+            observations += `💡 QUALITÉ DES ÉCHANGES :\n`;
+            observations += `• Discussions constructives et enrichissantes\n`;
+            observations += `• Partage d'expériences apprécié par l'ensemble des présents\n`;
+            observations += `• Climat de confiance propice aux échanges professionnels\n`;
+            
+            if (intervenantsExternes > 0) {
+                observations += `• Apports extérieurs enrichissants pour les équipes\n`;
+            }
+            if (consultantsPresents > 0) {
+                observations += `• Participation active des consultants VS2\n`;
+            }
+            observations += `\n`;
+            
+            observations += `📈 POINTS POSITIFS :\n`;
+            observations += `• Engagement des équipes dans la démarche qualité\n`;
+            observations += `• Volonté d'harmonisation des pratiques\n`;
+            observations += `• Dynamique collaborative renforcée\n`;
+            
+            if (intervenantsExternes > 0) {
+                observations += `• Partenariat fructueux avec les intervenants extérieurs\n`;
+            }
+            if (consultantsPresents >= 4) {
+                observations += `• Très bonne mobilisation de l'équipe de consultants\n`;
+            } else if (consultantsPresents >= 2) {
+                observations += `• Bonne représentation de l'équipe de consultants\n`;
+            }
+            observations += `\n`;
+            
+            if (modalite === 'visio') {
+                observations += `💻 MODALITÉ VISIOCONFÉRENCE :\n`;
+                observations += `• Bonne maîtrise technique de l'outil TEAMS\n`;
+                observations += `• Participation fluide malgré la distance\n`;
+                observations += `• Interaction maintenue entre tous les présents\n\n`;
+            }
+            
+            if (modalite === 'hybride') {
+                observations += `🔄 FORMAT HYBRIDE :\n`;
+                observations += `• Combinaison réussie entre présentiel et distanciel\n`;
+                observations += `• Inclusion efficace des participants à distance\n`;
+                observations += `• Flexibilité appréciée par les équipes\n\n`;
+            }
+            
+            observations += `🔮 PERSPECTIVES :\n`;
+            observations += `• Souhait de maintenir la régularité de ces échanges\n`;
+            observations += `• Intérêt pour approfondir certaines thématiques\n`;
+            observations += `• Demande de suivi des actions décidées`;
+            
+            if (intervenantsExternes > 0) {
+                observations += `\n• Volonté de poursuivre les collaborations avec les partenaires`;
+            }
+            
+            return observations;
+        }
+
+        // Génération PDF
+        function genererPDF() {
+            const form = document.getElementById('reunionForm');
+            const formData = new FormData(form);
+            
+            const data = obtenirDonneesFormulaire();
+            const pdfContent = genererHTMLPDF(data);
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(pdfContent);
+            printWindow.document.close();
+            
+            printWindow.onload = function() {
+                printWindow.print();
+            };
+        }
+
+        function genererHTMLPDF(data) {
+            const pppLabels = {
+                'etat_avancement': 'État d\'avancement des accompagnements VS2',
+                'retours_experience': 'Retours d\'expérience des professionnels',
+                'questions_outils': 'Questions sur les outils ou modalités du dispositif',
+                'points_vigilance': 'Points de vigilance repérés dans les accompagnements',
+                'bonnes_pratiques': 'Partage de bonnes pratiques ou initiatives locales',
+                'situation_problematique': 'Lecture collective d\'une situation problématique',
+                'bilan_ateliers': 'Bilan des ateliers animés (par ex. Image pro, pitch, CV)',
+                'nouvelle_etape': 'Préparation d\'une nouvelle étape (ex. restitution finale)',
+                'lien_dispositifs': 'Lien avec les autres dispositifs (UES, CRE, etc.)'
+            };
+
+            return `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Compte-rendu Réunion VS2</title>
+                <style>
+                    @page { 
+                        margin: 2cm; 
+                        size: A4;
+                    }
+                    body { 
+                        font-family: Arial, sans-serif; 
+                        font-size: 12px; 
+                        line-height: 1.4;
+                        color: #333;
+                    }
+                    .header { 
+                        text-align: center; 
+                        margin-bottom: 30px; 
+                        padding-bottom: 20px;
+                        border-bottom: 3px solid #a8e063;
+                    }
+                    .logo { 
+                        font-size: 24px; 
+                        font-weight: bold; 
+                        color: #a8e063; 
+                        margin-bottom: 10px;
+                    }
+                    .title { 
+                        font-size: 20px; 
+                        font-weight: bold; 
+                        margin-bottom: 5px;
+                    }
+                    .subtitle { 
+                        font-size: 14px; 
+                        color: #666; 
+                        font-style: italic;
+                    }
+                    .section { 
+                        margin-bottom: 25px; 
+                        page-break-inside: avoid;
+                    }
+                    .section-title { 
+                        font-size: 14px; 
+                        font-weight: bold; 
+                        background: #f0f8e8; 
+                        padding: 8px 12px; 
+                        border-left: 4px solid #a8e063;
+                        margin-bottom: 10px;
+                    }
+                    .info-grid { 
+                        display: grid; 
+                        grid-template-columns: 1fr 1fr; 
+                        gap: 20px; 
+                        margin-bottom: 15px;
+                    }
+                    .info-item { 
+                        margin-bottom: 8px;
+                    }
+                    .label { 
+                        font-weight: bold; 
+                        color: #555;
+                    }
+                    .value { 
+                        margin-left: 5px;
+                    }
+                    .list-item { 
+                        margin-left: 20px; 
+                        margin-bottom: 3px;
+                    }
+                    .text-content { 
+                        background: #f9f9f9; 
+                        padding: 10px; 
+                        border-radius: 5px; 
+                        margin-top: 5px;
+                        white-space: pre-wrap;
+                    }
+                    .footer { 
+                        margin-top: 40px; 
+                        padding-top: 20px; 
+                        border-top: 1px solid #ddd; 
+                        font-size: 10px; 
+                        color: #666;
+                    }
+                    .ppp-list {
+                        margin-left: 20px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <div class="logo">SOLERYS - OASYS & Cie</div>
+                    <div class="title">COMPTE-RENDU</div>
+                    <div class="title">Réunion d'équipe Bas-Rhin - VS2</div>
+                    <div class="subtitle">Partages des Pratiques Professionnelles</div>
+                    ${data.reference ? `<div style="margin-top: 15px; font-size: 14px; font-weight: bold;">Référence: ${data.reference}</div>` : ''}
+                </div>
+
+                <div class="section">
+                    <div class="section-title">INFORMATIONS GÉNÉRALES</div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">Date et horaires:</span>
+                            <span class="value">${data.date || 'Non renseigné'} ${data.horaires ? 'de ' + data.horaires : ''}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Modalité:</span>
+                            <span class="value">${data.modalite || 'Non renseigné'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Animateur:</span>
+                            <span class="value">${data.animateur || 'Non renseigné'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Sites:</span>
+                            <span class="value">${data.sites.length > 0 ? data.sites.join(', ') : 'Aucun site sélectionné'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">PARTICIPANTS</div>
+                    <div class="info-item">
+                        <span class="label">Consultants présents:</span>
+                        <div class="text-content">${data.consultants_presents.length > 0 ? data.consultants_presents.join(', ') : 'Aucun consultant sélectionné'}</div>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Consultants absents:</span>
+                        <div class="text-content">${data.participants_absents || 'Non renseigné'}</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">INTERVENANTS</div>
+                    <div class="info-item">
+                        <span class="label">Intervenants Solerys:</span>
+                        <div class="text-content">${data.intervenants_solerys || 'Non renseigné'}</div>
+                    </div>
+                    ${data.intervenants_exterieurs ? `
+                    <div class="info-item">
+                        <span class="label">Intervenants extérieurs:</span>
+                        <div class="text-content">${data.intervenants_exterieurs}</div>
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div class="section">
+                    <div class="section-title">ORDRE DU JOUR</div>
+                    ${data.ordre_jour && data.ordre_jour.length > 0 ? `
+                    <div class="info-item">
+                        <span class="label">Points traités:</span>
+                        <div class="text-content">${data.ordre_jour.map((point, index) => 
+                            `${index + 1}. ${point.titre}${point.description ? '\n   ' + point.description : ''}`
+                        ).join('\n\n')}</div>
+                    </div>
+                    ` : `
+                    <div class="info-item">
+                        <span class="label">Points traités:</span>
+                        <div class="text-content">Ordre du jour non détaillé</div>
+                    </div>
+                    `}
+                    ${data.ppp.length > 0 ? `
+                    <div class="info-item">
+                        <span class="label">P.P.P. (Partages des Pratiques Professionnelles):</span>
+                        <div class="ppp-list">
+                            ${data.ppp.map(item => `<div class="list-item">• ${pppLabels[item] || item}</div>`).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div class="section">
+                    <div class="section-title">SYNTHÈSE DES ÉCHANGES</div>
+                    
+                    ${data.synthese_reunion ? `
+                    <div class="info-item">
+                        <span class="label">Synthèse générale de la réunion:</span>
+                        <div class="text-content">${data.synthese_reunion}</div>
+                    </div>
+                    ` : ''}
+
+                    ${data.points_cles ? `
+                    <div class="info-item">
+                        <span class="label">Points clés retenus:</span>
+                        <div class="text-content">${data.points_cles}</div>
+                    </div>
+                    ` : ''}
+
+                    ${data.questions_reponses ? `
+                    <div class="info-item">
+                        <span class="label">Questions/Réponses importantes:</span>
+                        <div class="text-content">${data.questions_reponses}</div>
+                    </div>
+                    ` : ''}
+
+                    ${data.observations ? `
+                    <div class="info-item">
+                        <span class="label">Observations et remarques:</span>
+                        <div class="text-content">${data.observations}</div>
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div class="section">
+                    <div class="section-title">ACTIONS ET SUIVI</div>
+                    ${data.actions ? `
+                    <div class="info-item">
+                        <span class="label">Actions décidées:</span>
+                        <div class="text-content">${data.actions}</div>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="info-item">
+                        <span class="label">Prochaine réunion:</span>
+                        <span class="value">${data.prochaine_reunion || 'Date à définir'}</span>
+                    </div>
+
+                    ${data.points_suivants ? `
+                    <div class="info-item">
+                        <span class="label">Points à aborder lors de la prochaine réunion:</span>
+                        <div class="text-content">${data.points_suivants}</div>
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div class="footer">
+                    <div>SOLERYS</div>
+                    <div>5, quai Jean Moulin - 69001 Lyon - Tél. 04 72 07 31 25 – Fax. 04 72 07 31 29</div>
+                    <div>SARL au capital de 100.000€ - SIRET 510 126 949 00013</div>
+                    <div>N° TVA Intracommunautaire : FR 255 101 26 949</div>
+                    <div>Déclaration d'activité enregistrée sous le numéro 82 69 10 419 69</div>
+                </div>
+            </body>
+            </html>
+            `;
+        }
+
+        // Soumission du formulaire
+        document.getElementById('reunionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            
+            submitBtn.textContent = '⏳ Finalisation en cours...';
+            submitBtn.style.background = 'linear-gradient(135deg, #95d5b2 0%, #74c69d 100%)';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                submitBtn.textContent = '✅ Compte-rendu finalisé !';
+                submitBtn.style.background = 'linear-gradient(135deg, #52b788 0%, #40916c 100%)';
+                
+                setTimeout(() => {
+                    submitBtn.textContent = originalText;
+                    submitBtn.style.background = 'linear-gradient(135deg, #a8e063 0%, #56ab2f 100%)';
+                    submitBtn.disabled = false;
+                }, 3000);
+            }, 2000);
+        });
+
+        // Fermeture du modal en cliquant à l'extérieur
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalChargement');
+            if (event.target === modal) {
+                fermerModal();
+            }
+        }
+
+        // Animation des sections au scroll
+        const sections = document.querySelectorAll('.section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        sections.forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'all 0.6s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>participants_absents">Consultants absents :</label>
+                    <textarea id="participants_absents" name="participants_absents" placeholder="Liste générée automatiquement des consultants non cochés..." readonly style="background-color: #f8f9fa; min-height: 80px;"></textarea>
+                </div>
+            </div>
+
+            <!-- Intervenants -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">4</span>
+                    Intervenants
+                </h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="intervenants_solerys">Intervenants Solerys <span class="required">*</span></label>
+                        <textarea id="intervenants_solerys" name="intervenants_solerys" placeholder="Ex: Marie Dubois (animateur)" required maxlength="500" style="min-height: 80px;"></textarea>
+                        <div class="char-count" id="intervenantsSolerysCount">0/500</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="intervenants_exterieurs">Intervenants extérieurs</label>
+                        <textarea id="intervenants_exterieurs" name="intervenants_exterieurs" placeholder="Ex: Pierre Leblanc (Pôle Emploi)" maxlength="500" style="min-height: 80px;"></textarea>
+                        <div class="char-count" id="intervenantsExterieursCount">0/500</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ordre du jour -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">5</span>
+                    Ordre du jour
+                    <button type="button" class="template-btn" onclick="ouvrirTemplates()" title="Charger un modèle d'ordre du jour">
+                        📋 Templates
+                    </button>
+                </h2>
+                
+                <div class="form-group">
+                    <label>Points à aborder :</label>
+                    <div class="ordre-jour-container">
+                        <div class="points-header">
+                            <button type="button" class="add-point-btn" onclick="ajouterPoint()" title="Ajouter un point">
+                                ➕ Ajouter un point
+                            </button>
+                            <button type="button" class="auto-generate-btn" onclick="genererOrdreJourAuto()" title="Générer automatiquement basé sur les P.P.P.">
+                                🤖 Générer auto
+                            </button>
+                        </div>
+                        <div id="points-liste" class="points-liste">
+                            <div class="point-item" data-index="1">
+                                <div class="point-header">
+                                    <span class="point-numero">1.</span>
+                                    <span class="drag-handle" title="Glisser pour réorganiser">⋮⋮</span>
+                                    <input type="text" class="point-titre" placeholder="Titre du point" maxlength="100">
+                                    <button type="button" class="remove-point-btn" onclick="supprimerPoint(this)" title="Supprimer ce point">❌</button>
+                                </div>
+                                <textarea class="point-description" placeholder="Description détaillée (optionnel)" maxlength="300"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Points de synthèse prévus :</label>
+                        <div class="synthese-container">
+                            <label class="synthese-item">
+                                <input type="checkbox" name="points_synthese" value="chiffres" checked>
+                                <span>📊 Présentation des chiffres et indicateurs VS2</span>
+                            </label>
+                            <label class="synthese-item">
+                                <input type="checkbox" name="points_synthese" value="echanges_ppp" checked>
+                                <span>💭 Échanges sur les Pratiques Professionnelles</span>
+                            </label>
+                            <label class="synthese-item">
+                                <input type="checkbox" name="points_synthese" value="questions_techniques">
+                                <span>❓ Questions/Réponses et points techniques</span>
+                            </label>
+                            <label class="synthese-item">
+                                <input type="checkbox" name="points_synthese" value="organisation">
+                                <span>🏢 Points d'organisation et coordination</span>
+                            </label>
+                            <label class="synthese-item">
+                                <input type="checkbox" name="points_synthese" value="communication">
+                                <span>📢 Communication et valorisation</span>
+                            </label>
+                            <label class="synthese-item">
+                                <input type="checkbox" name="points_synthese" value="divers">
+                                <span>💡 Points divers et perspectives</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ppp">P.P.P. (Partages des Pratiques Professionnelles)</label>
+                        <div class="ppp-container-enhanced">
+                            <div class="ppp-groupe">
+                                <div class="ppp-groupe-titre">📊 Suivi et évaluation</div>
+                                <label class="ppp-item-enhanced">
+                                    <input type="checkbox" name="ppp" value="etat_avancement">
+                                    <div class="ppp-content">
+                                        <span class="ppp-titre">État d'avancement des accompagnements VS2</span>
+                                        <span class="ppp-description">Suivi des dossiers, nouveaux entrants, points d'étape</span>
+                                    </div>
+                                </label>
+                                <label class="ppp-item-enhanced">
+                                    <input type="checkbox" name="ppp" value="retours_experience">
+                                    <div class="ppp-content">
+                                        <span class="ppp-titre">Retours d'expérience des professionnels</span>
+                                        <span class="ppp-description">Situations marquantes, réussites, difficultés rencontrées</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="ppp-groupe">
+                                <div class="ppp-groupe-titre">🛠️ Outils et méthodes</div>
+                                <label class="ppp-item-enhanced">
+                                    <input type="checkbox" name="ppp" value="questions_outils">
+                                    <div class="ppp-content">
+                                        <span class="ppp-titre">Questions sur les outils ou modalités du dispositif</span>
+                                        <span class="ppp-description">Clarifications, harmonisation des pratiques</span>
+                                    </div>
+                                </label>
+                                <label class="ppp-item-enhanced">
+                                    <input type="checkbox" name="ppp" value="bonnes_pratiques">
+                                    <div class="ppp-content">
+                                        <span class="ppp-titre">Partage de bonnes pratiques ou initiatives locales</span>
+                                        <span class="ppp-description">Méthodes efficaces, outils adaptés, innovations</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="ppp-groupe">
+                                <div class="ppp-groupe-titre">⚠️ Points d'attention</div>
+                                <label class="ppp-item-enhanced">
+                                    <input type="checkbox" name="ppp" value="points_vigilance">
+                                    <div class="ppp-content">
+                                        <span class="ppp-titre">Points de vigilance repérés dans les accompagnements</span>
+                                        <span class="ppp-description">Situations à risque, mesures préventives</span>
+                                    </div>
+                                </label>
+                                <label class="ppp-item-enhanced">
+                                    <input type="checkbox" name="ppp" value="situation_problematique">
+                                    <div class="ppp-content">
+                                        <span class="ppp-titre">Lecture collective d'une situation problématique</span>
+                                        <span class="ppp-description">Analyse de cas, recherche de solutions collaboratives</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="ppp-groupe">
+                                <div class="ppp-groupe-titre">🎯 Actions et perspectives</div>
+                                <label class="ppp-item-enhanced">
+                                    <input type="checkbox" name="ppp" value="bilan_ateliers">
+                                    <div class="ppp-content">
+                                        <span class="ppp-titre">Bilan des ateliers animés</span>
+                                        <span class="ppp-description">Image pro, CV, techniques de recherche, pitch</span>
+                                    </div>
+                                </label>
+                                <label class="ppp-item-enhanced">
+                                    <input type="checkbox" name="ppp" value="nouvelle_etape">
+                                    <div class="ppp-content">
+                                        <span class="ppp-titre">Préparation d'une nouvelle étape</span>
+                                        <span class="ppp-description">Restitution finale, bilans, évaluations</span>
+                                    </div>
+                                </label>
+                                <label class="ppp-item-enhanced">
+                                    <input type="checkbox" name="ppp" value="lien_dispositifs">
+                                    <div class="ppp-content">
+                                        <span class="ppp-titre">Lien avec les autres dispositifs</span>
+                                        <span class="ppp-description">UES, CRE, articulation avec autres mesures</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="validation-container" id="validationOrdreJour" style="display: none;">
+                    <div class="validation-message">
+                        <span class="validation-icon">⚠️</span>
+                        <span class="validation-text">Suggestions d'amélioration disponibles</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Synthèse des échanges -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">6</span>
+                    Synthèse des échanges
+                    <button type="button" class="ai-btn" onclick="genererSyntheseIA()" title="Analyser l'ordre du jour et générer/compléter la synthèse automatiquement">
+                        🤖 Compléter avec IA
+                    </button>
+                </h2>
+                
+                <div class="form-group">
+                    <label for="synthese_reunion">Synthèse générale de la réunion</label>
+                    <textarea id="synthese_reunion" name="synthese_reunion" placeholder="Rédigez ici la synthèse générale des échanges de la réunion, ou cliquez sur 'Compléter avec IA' pour une génération automatique basée sur l'ordre du jour..." maxlength="3000" style="min-height: 300px;"></textarea>
+                    <div class="char-count" id="syntheseReunionCount">0/3000</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="points_cles">Points clés retenus</label>
+                    <textarea id="points_cles" name="points_cles" placeholder="• Premier point clé&#10;• Deuxième point clé&#10;• Troisième point clé..." maxlength="1500"></textarea>
+                    <div class="char-count" id="pointsClesCount">0/1500</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="questions_reponses">Questions/Réponses importantes</label>
+                    <textarea id="questions_reponses" name="questions_reponses" placeholder="Q: Question posée&#10;R: Réponse apportée&#10;&#10;Q: Autre question&#10;R: Autre réponse..." maxlength="2000"></textarea>
+                    <div class="char-count" id="questionsReponsesCount">0/2000</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="observations">Observations et remarques</label>
+                    <textarea id="observations" name="observations" placeholder="Observations particulières, ambiance de la réunion, participation des membres..." maxlength="1500"></textarea>
+                    <div class="char-count" id="observationsCount">0/1500</div>
+                </div>
+            </div>
+
+            <!-- Actions et suivi -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">7</span>
+                    Actions et suivi
+                </h2>
+                <div class="form-group">
+                    <label for="actions">Actions décidées</label>
+                    <textarea id="actions" name="actions" placeholder="Actions à mettre en place, responsables, échéances" maxlength="2000"></textarea>
+                    <div class="char-count" id="actionsCount">0/2000</div>
+                </div>
+                <div class="form-group">
+                    <label for="
