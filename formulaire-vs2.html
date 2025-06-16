@@ -451,7 +451,11 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="reference">Référence :</label>
-                            <input type="text" id="reference" name="reference" readonly>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <input type="text" id="reference" name="reference" placeholder="Ex: 16166/VS25/0612" style="flex: 1;">
+                                <button type="button" class="btn btn-secondary" onclick="ajouterDateReference()" style="padding: 8px 12px; font-size: 12px;">📅 + Date</button>
+                            </div>
+                            <div style="font-size: 11px; color: #666; margin-top: 3px;">Format suggéré: XXXXX/VS25/JJMM (cliquez "📅 + Date" pour ajouter la date automatiquement)</div>
                         </div>
                         <div class="form-group">
                             <label for="date">Date :</label>
@@ -764,7 +768,6 @@
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
-            updateReference();
             updateProgress();
             updateHoraires(); // Calculer la durée initiale
             updateAbsents();
@@ -772,18 +775,34 @@
             setupAutoSave();
         });
 
-        // Génération automatique de la référence
-        function updateReference() {
-            const dateInput = document.getElementById('date');
+        // Ajout de la date à la référence (nouveau système)
+        function ajouterDateReference() {
+            const dateInput = document.getElementById('date').value;
             const referenceInput = document.getElementById('reference');
             
-            if (dateInput.value) {
-                const date = new Date(dateInput.value);
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                referenceInput.value = `VS2-${year}${month}${day}`;
+            if (!dateInput) {
+                alert('⚠️ Veuillez d\'abord sélectionner une date !');
+                return;
             }
+            
+            const date = new Date(dateInput);
+            const jour = String(date.getDate()).padStart(2, '0');
+            const mois = String(date.getMonth() + 1).padStart(2, '0');
+            const dateFormatee = jour + mois; // Format JJMM
+            
+            // Ajouter à la fin de la référence existante
+            let referenceActuelle = referenceInput.value;
+            if (referenceActuelle && !referenceActuelle.endsWith('/')) {
+                referenceActuelle += '/';
+            }
+            referenceInput.value = referenceActuelle + dateFormatee;
+            
+            updateProgress();
+        }
+
+        // Ancienne fonction de génération automatique (conservée pour compatibilité)
+        function updateReference() {
+            // Plus utilisée mais conservée pour éviter les erreurs
         }
 
         // Gestion des horaires personnalisés
@@ -1207,6 +1226,7 @@
             
             // Charger les champs de base
             document.getElementById('date').value = data.date || '';
+            document.getElementById('reference').value = data.reference || '';
             
             // Charger les horaires (nouveau système)
             if (data.heureDebut && data.heureFin) {
@@ -1251,7 +1271,6 @@
             }
             
             // Mettre à jour les champs calculés
-            updateReference();
             updateAbsents();
             updateProgress();
             updateCharCount('synthese', 1000);
@@ -1482,7 +1501,6 @@ Voulez-vous continuer la génération du PDF ?`);
         }
 
         // Event listeners
-        document.getElementById('date').addEventListener('change', updateReference);
         document.getElementById('heureDebut').addEventListener('change', updateHoraires);
         document.getElementById('heureFin').addEventListener('change', updateHoraires);
         document.addEventListener('input', updateProgress);
