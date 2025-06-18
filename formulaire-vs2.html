@@ -20,7 +20,10 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #8bc34a 0%, #9ccc65 50%, #aed581 100%);
+            background-image: url('https://via.placeholder.com/1200x120/8bc34a/ffffff?text=REMPLACER+PAR+VOTRE+BANDEAU+SOLERYS');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             color: white;
             padding: 20px 0;
             position: relative;
@@ -31,33 +34,19 @@
             align-items: center;
         }
 
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -20%;
-            right: -10%;
-            width: 300px;
-            height: 300px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            z-index: 1;
+        /* Alternative avec balise img (décommentez si vous préférez) */
+        /*
+        .header-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            display: block;
         }
-
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            right: -5%;
-            width: 200px;
-            height: 200px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 50%;
-            z-index: 1;
-        }
+        */
 
         .header-content {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             position: relative;
             z-index: 2;
@@ -474,19 +463,13 @@
 </head>
 <body>
     <div class="header">
+        <!-- MÉTHODE 1: Image en background CSS (activée par défaut) -->
+        <!-- Remplacez l'URL dans le CSS .header par votre image -->
+        
+        <!-- MÉTHODE 2: Balise img (décommentez pour utiliser) -->
+        <!-- <img src="votre-bandeau-solerys.png" alt="Bandeau Solerys" class="header-image"> -->
+        
         <div class="header-content">
-            <div class="header-left">
-                <div class="website">www.solerys.fr</div>
-                <div class="logo-section">
-                    <div class="logo-brand">
-                        <div class="logo-icon">Y</div>
-                        <div class="company-name">
-                            <div class="solerys">SOLERYS</div>
-                            <div class="oasys">OASYS & Cie</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="header-right">
                 <div class="meeting-title">Réunion d'équipe VS2</div>
                 <div class="meeting-subtitle">Partages des Pratiques Professionnelles</div>
