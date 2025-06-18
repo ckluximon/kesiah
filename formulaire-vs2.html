@@ -1272,145 +1272,93 @@
             setTimeout(() => status.classList.remove('show'), 2000);
         }
 
-        // Fonctions de sauvegarde/chargement RÉELLES
+        // Fonctions de sauvegarde/chargement
         function sauvegarder() {
-            const nomSauvegarde = prompt('Nom de la sauvegarde :', `Réunion_${new Date().toISOString().split('T')[0]}`);
-            if (!nomSauvegarde) return;
-            
             const formData = collectFormData();
-            formData.ordreJourHTML = document.getElementById('ordreJourList').innerHTML;
-            
-            const sauvegarde = {
-                nom: nomSauvegarde,
-                date: new Date().toISOString(),
-                data: formData
-            };
-            
-            let sauvegardes = JSON.parse(localStorage.getItem('sauvegardes_vs2') || '[]');
-            sauvegardes.push(sauvegarde);
-            localStorage.setItem('sauvegardes_vs2', JSON.stringify(sauvegardes));
-            
+            const jsonData = JSON.stringify(formData, null, 2);
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `reunion-vs2-${formData.date || 'sans-date'}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
             showSaveStatus();
-            alert(`✅ Formulaire "${nomSauvegarde}" sauvegardé avec succès !`);
         }
 
         function charger() {
-            const sauvegardes = JSON.parse(localStorage.getItem('sauvegardes_vs2') || '[]');
-            const modalContent = document.querySelector('#chargementModal .modal-content');
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            chargerDonnees(data);
+                        } catch (error) {
+                            alert('Erreur lors du chargement du fichier : ' + error.message);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function chargerDonnees(data) {
+            // Charger les données dans le formulaire
+            Object.keys(data).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.value = data[key];
+                }
+            });
             
-            if (sauvegardes.length === 0) {
-                modalContent.innerHTML = `
-                    <div class="modal-header">
-                        <h3>📂 Charger un formulaire</h3>
-                        <span class="close" onclick="fermerChargement()">&times;</span>
-                    </div>
-                    <p>Aucune sauvegarde trouvée. Créez d'abord une sauvegarde en remplissant le formulaire et en cliquant sur "💾 Sauvegarder".</p>
-                `;
-            } else {
-                let html = `
-                    <div class="modal-header">
-                        <h3>📂 Charger un formulaire (${sauvegardes.length} sauvegarde(s))</h3>
-                        <span class="close" onclick="fermerChargement()">&times;</span>
-                    </div>
-                `;
-                
-                sauvegardes.reverse().forEach((save, index) => {
-                    const realIndex = sauvegardes.length - 1 - index;
-                    const dateFormatee = new Date(save.date).toLocaleString('fr-FR');
-                    html += `
-                        <div style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 5px; background: #f8f9fa;">
-                            <button class="btn btn-primary" onclick="chargerFormulaire(${realIndex})" style="margin-bottom: 5px; width: 100%;">${save.nom}</button>
-                            <p style="font-size: 12px; color: #666; margin: 0;">Sauvegardé le: ${dateFormatee}</p>
-                            <button class="btn" onclick="supprimerSauvegarde(${realIndex})" style="background: #e74c3c; color: white; font-size: 11px; padding: 3px 8px; margin-top: 5px;">🗑️ Supprimer</button>
-                        </div>
-                    `;
+            // Charger les checkboxes
+            if (data.sites) {
+                data.sites.forEach(site => {
+                    const checkbox = document.querySelector(`input[name="sites"][value="${site}"]`);
+                    if (checkbox) checkbox.checked = true;
                 });
-                
-                modalContent.innerHTML = html;
             }
             
-            document.getElementById('chargementModal').style.display = 'block';
-        }
-
-        function fermerChargement() {
-            document.getElementById('chargementModal').style.display = 'none';
-        }
-
-        function chargerFormulaire(index) {
-            const sauvegardes = JSON.parse(localStorage.getItem('sauvegardes_vs2') || '[]');
-            const sauvegarde = sauvegardes[index];
-            
-            if (!sauvegarde) {
-                alert('Erreur : Sauvegarde introuvable');
-                return;
+            if (data.consultants) {
+                data.consultants.forEach(consultant => {
+                    const checkbox = document.querySelector(`input[name="consultants"][value="${consultant}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
             }
             
-            const data = sauvegarde.data;
-            
-            // Charger les champs de base
-            document.getElementById('date').value = data.date || '';
-            document.getElementById('reference').value = data.reference || '';
-            
-            // Charger les horaires (nouveau système)
-            if (data.heureDebut && data.heureFin) {
-                document.getElementById('heureDebut').value = data.heureDebut;
-                document.getElementById('heureFin').value = data.heureFin;
-                updateHoraires();
-            } else if (data.horaires) {
-                // Compatibilité avec ancien système
-                document.getElementById('horaires').value = data.horaires;
+            if (data.ppp) {
+                data.ppp.forEach(ppp => {
+                    const checkbox = document.querySelector(`input[name="ppp"][value="${ppp}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
             }
             
-            document.getElementById('animateur').value = data.animateur || '';
-            document.getElementById('modalite').value = data.modalite || '';
-            document.getElementById('intervenantsSolerys').value = data.intervenantsSolerys || '';
-            document.getElementById('intervenantsExterieurs').value = data.intervenantsExterieurs || '';
-            document.getElementById('synthese').value = data.synthese || '';
-            
-            // Charger les sites
-            document.querySelectorAll('input[name="sites"]').forEach(cb => {
-                cb.checked = data.sites && data.sites.includes(cb.value);
-            });
-            
-            // Charger les consultants présents
-            document.querySelectorAll('input[name="consultants"]').forEach(cb => {
-                cb.checked = data.presents && data.presents.includes(cb.value);
-            });
-            
-            // Charger les consultants absents
-            document.querySelectorAll('input[name="absents"]').forEach(cb => {
-                cb.checked = data.absentsChecked && data.absentsChecked.includes(cb.value);
-            });
-            
-            // Charger les P.P.P.
-            document.querySelectorAll('input[name="ppp"]').forEach(cb => {
-                cb.checked = data.ppp && data.ppp.includes(cb.value);
-            });
-            
-            // Charger l'ordre du jour
-            if (data.ordreJourHTML) {
-                document.getElementById('ordreJourList').innerHTML = data.ordreJourHTML;
-                setupDragAndDrop();
-            }
-            
-            // Mettre à jour les champs calculés
-            updateAbsents();
             updateProgress();
-            updateCharCount('synthese', 1000);
-            
-            fermerChargement();
-            alert(`✅ Formulaire "${sauvegarde.nom}" chargé avec succès !`);
+            updateAbsents();
+            updateHoraires();
         }
 
-        function supprimerSauvegarde(index) {
-            if (!confirm('Êtes-vous sûr de vouloir supprimer cette sauvegarde ?')) return;
-            
-            let sauvegardes = JSON.parse(localStorage.getItem('sauvegardes_vs2') || '[]');
-            sauvegardes.splice(index, 1);
-            localStorage.setItem('sauvegardes_vs2', JSON.stringify(sauvegardes));
-            
-            // Recharger la liste
-            charger();
+        function collectFormData() {
+            return {
+                reference: document.getElementById('reference').value,
+                date: document.getElementById('date').value,
+                heureDebut: document.getElementById('heureDebut').value,
+                heureFin: document.getElementById('heureFin').value,
+                animateur: document.getElementById('animateur').value,
+                modalite: document.getElementById('modalite').value,
+                sites: Array.from(document.querySelectorAll('input[name="sites"]:checked')).map(cb => cb.value),
+                consultants: Array.from(document.querySelectorAll('input[name="consultants"]:checked')).map(cb => cb.value),
+                intervenantsSolerys: document.getElementById('intervenantsSolerys').value,
+                intervenantsExterieurs: document.getElementById('intervenantsExterieurs').value,
+                ppp: Array.from(document.querySelectorAll('input[name="ppp"]:checked')).map(cb => cb.value),
+                synthese: document.getElementById('synthese').value
+            };
         }
 
         // Finalisation
@@ -1434,152 +1382,107 @@
 
         // Génération PDF
         function genererPDF() {
-            const verifier = confirm(`📋 Vérifier et valider le compte-rendu
-
-⚠️ Avant de générer le PDF, assurez-vous que :
-- Toutes les informations sont correctes
-- La synthèse est complète  
-- Les participants sont bien listés
-- L'ordre du jour est finalisé
-
-Voulez-vous continuer la génération du PDF ?`);
+            const formData = collectFormData();
+            const pdfContent = generatePDFContent(formData);
             
-            if (!verifier) {
-                return;
-            }
-
-            try {
-                const formData = collectFormData();
-                const pdfContent = generatePDFContent(formData);
-                
-                // Ouvrir dans une nouvelle page
-                const pdfWindow = window.open('', '_blank');
-                pdfWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html lang="fr">
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>Compte-rendu VS2 - ${formData.date}</title>
-                        <style>
-                            body { font-family: Arial, sans-serif; line-height: 1.4; margin: 20px; }
-                            .pdf-header { background: #8bc34a; color: white; padding: 20px; margin: -20px -20px 30px -20px; text-align: center; }
-                            .section { margin-bottom: 25px; page-break-inside: avoid; }
-                            .section-title { color: #8bc34a; font-size: 18px; font-weight: bold; border-bottom: 2px solid #8bc34a; padding-bottom: 8px; margin-bottom: 15px; }
-                            .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px; }
-                            .info-item { background: #f8f9fa; padding: 12px; border-radius: 6px; border-left: 4px solid #8bc34a; }
-                            .info-label { font-weight: bold; color: #2c3e50; display: block; margin-bottom: 5px; }
-                            .list-item { margin-bottom: 8px; padding-left: 20px; }
-                            .ordre-jour-item { background: #f8f9fa; padding: 15px; margin-bottom: 12px; border-radius: 6px; border-left: 4px solid #3498db; }
-                            .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #666; border-top: 2px solid #ddd; padding-top: 20px; }
-                            .print-button { background: #8bc34a; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 20px 0; }
-                            .print-button:hover { background: #7cb342; }
-                            @media print { 
-                                body { margin: 0; }
-                                .pdf-header { background: #8bc34a !important; -webkit-print-color-adjust: exact; }
-                                .no-print { display: none !important; }
-                                .info-item, .ordre-jour-item { border-left: 4px solid #000 !important; }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        ${pdfContent}
-                        <div class="no-print" style="text-align: center; margin: 30px 0;">
-                            <button onclick="window.print()" class="print-button">🖨️ Imprimer / Sauvegarder en PDF</button>
-                            <button onclick="window.close()" class="print-button" style="background: #95a5a6; margin-left: 10px;">✕ Fermer</button>
-                        </div>
-                    </body>
-                    </html>
-                `);
-                pdfWindow.document.close();
-                
-            } catch (error) {
-                alert('Erreur lors de la génération du PDF : ' + error.message);
-            }
-        }
-
-        function collectFormData() {
-            return {
-                reference: document.getElementById('reference').value || 'N/A',
-                date: document.getElementById('date').value || 'N/A',
-                heureDebut: document.getElementById('heureDebut').value || '14:00',
-                heureFin: document.getElementById('heureFin').value || '16:00',
-                horaires: document.getElementById('horaires').value || 'N/A',
-                animateur: document.getElementById('animateur').value || 'N/A',
-                modalite: document.getElementById('modalite').value || 'N/A',
-                sites: Array.from(document.querySelectorAll('input[name="sites"]:checked')).map(cb => cb.value),
-                presents: Array.from(document.querySelectorAll('input[name="consultants"]:checked')).map(cb => cb.value),
-                absentsChecked: Array.from(document.querySelectorAll('input[name="absents"]:checked')).map(cb => cb.value),
-                absents: Array.from(document.querySelectorAll('input[name="absents"]:checked')).map(cb => cb.value).join(', ') || 'Aucun',
-                intervenantsSolerys: document.getElementById('intervenantsSolerys').value || 'N/A',
-                intervenantsExterieurs: document.getElementById('intervenantsExterieurs').value || 'N/A',
-                ppp: Array.from(document.querySelectorAll('input[name="ppp"]:checked')).map(cb => cb.value),
-                ordreJour: Array.from(document.querySelectorAll('.ordre-jour-item')).map(item => {
-                    const titre = item.querySelector('input[type="text"]')?.value || '';
-                    const description = item.querySelector('textarea')?.value || '';
-                    return { titre, description };
-                }).filter(item => item.titre),
-                synthese: document.getElementById('synthese').value || 'N/A'
-            };
+            // Ouvrir dans une nouvelle fenêtre
+            const pdfWindow = window.open('', '_blank');
+            pdfWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="fr">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Compte-rendu VS2 - ${formData.date}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.4; margin: 20px; }
+                        .pdf-header { background: #8bc34a; color: white; padding: 20px; margin: -20px -20px 30px -20px; text-align: center; }
+                        .section { margin-bottom: 25px; page-break-inside: avoid; }
+                        .section-title { color: #8bc34a; font-size: 18px; font-weight: bold; border-bottom: 2px solid #8bc34a; padding-bottom: 8px; margin-bottom: 15px; }
+                        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px; }
+                        .info-item { background: #f8f9fa; padding: 12px; border-radius: 6px; border-left: 4px solid #8bc34a; }
+                        .info-label { font-weight: bold; color: #2c3e50; display: block; margin-bottom: 5px; }
+                        .list-item { margin-bottom: 8px; padding-left: 20px; }
+                        .ordre-jour-item { background: #f8f9fa; padding: 15px; margin-bottom: 12px; border-radius: 6px; border-left: 4px solid #3498db; }
+                        .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #666; border-top: 2px solid #ddd; padding-top: 20px; }
+                        .print-button { background: #8bc34a; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 20px 0; }
+                        .print-button:hover { background: #7cb342; }
+                        @media print { 
+                            body { margin: 0; }
+                            .pdf-header { background: #8bc34a !important; -webkit-print-color-adjust: exact; }
+                            .no-print { display: none !important; }
+                            .info-item, .ordre-jour-item { border-left: 4px solid #000 !important; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${pdfContent}
+                    <div class="no-print" style="text-align: center; margin: 30px 0;">
+                        <button onclick="window.print()" class="print-button">🖨️ Imprimer / Sauvegarder en PDF</button>
+                        <button onclick="window.close()" class="print-button" style="background: #95a5a6; margin-left: 10px;">✕ Fermer</button>
+                    </div>
+                </body>
+                </html>
+            `);
+            pdfWindow.document.close();
         }
 
         function generatePDFContent(data) {
+            const ordreJour = Array.from(document.querySelectorAll('.ordre-jour-item')).map(item => {
+                const titre = item.querySelector('input[type="text"]')?.value || '';
+                const description = item.querySelector('textarea')?.value || '';
+                return { titre, description };
+            }).filter(item => item.titre);
+
             return `
                 <div class="pdf-header">
                     <h1>Compte-rendu de Réunion d'équipe VS2</h1>
                     <p>Partages des Pratiques Professionnelles - Solerys</p>
-                    <button onclick="window.print()" class="no-print" style="background: white; color: #8bc34a; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-top: 10px;">🖨️ Imprimer / Sauvegarder en PDF</button>
                 </div>
 
                 <div class="section">
                     <div class="section-title">📋 Informations générales</div>
                     <div class="info-grid">
-                        <div class="info-item"><span class="info-label">Référence:</span> ${data.reference}</div>
-                        <div class="info-item"><span class="info-label">Date:</span> ${data.date}</div>
-                        <div class="info-item"><span class="info-label">Horaires:</span> ${data.horaires}</div>
-                        <div class="info-item"><span class="info-label">Animateur:</span> ${data.animateur}</div>
-                        <div class="info-item"><span class="info-label">Modalité:</span> ${data.modalite}</div>
+                        <div class="info-item"><span class="info-label">Référence:</span> ${data.reference || 'N/A'}</div>
+                        <div class="info-item"><span class="info-label">Date:</span> ${data.date || 'N/A'}</div>
+                        <div class="info-item"><span class="info-label">Horaires:</span> ${data.heureDebut || 'N/A'} à ${data.heureFin || 'N/A'}</div>
+                        <div class="info-item"><span class="info-label">Animateur:</span> ${data.animateur || 'N/A'}</div>
+                        <div class="info-item"><span class="info-label">Modalité:</span> ${data.modalite || 'N/A'}</div>
                     </div>
                 </div>
 
-                ${data.sites.length > 0 ? `
+                ${data.sites && data.sites.length > 0 ? `
                 <div class="section">
                     <div class="section-title">🏢 Sites concernés</div>
                     ${data.sites.map(site => `<div class="list-item">• ${site}</div>`).join('')}
                 </div>
                 ` : ''}
 
+                ${data.consultants && data.consultants.length > 0 ? `
                 <div class="section">
-                    <div class="section-title">👥 Participants</div>
-                    ${data.presents.length > 0 ? `
-                    <div style="margin-bottom: 15px;">
-                        <strong>Consultants présents:</strong><br>
-                        ${data.presents.map(p => `<div class="list-item">• ${p}</div>`).join('')}
-                    </div>
-                    ` : ''}
-                    <div>
-                        <strong>Consultants absents:</strong> ${data.absents}
-                    </div>
-                </div>
-
-                ${data.intervenantsSolerys !== 'N/A' || data.intervenantsExterieurs !== 'N/A' ? `
-                <div class="section">
-                    <div class="section-title">🎯 Intervenants</div>
-                    ${data.intervenantsSolerys !== 'N/A' ? `<div><strong>Solerys:</strong> ${data.intervenantsSolerys}</div>` : ''}
-                    ${data.intervenantsExterieurs !== 'N/A' ? `<div><strong>Extérieurs:</strong> ${data.intervenantsExterieurs}</div>` : ''}
+                    <div class="section-title">👥 Participants présents</div>
+                    ${data.consultants.map(consultant => `<div class="list-item">• ${consultant}</div>`).join('')}
                 </div>
                 ` : ''}
 
-                ${data.ppp.length > 0 ? `
+                ${data.intervenantsSolerys || data.intervenantsExterieurs ? `
+                <div class="section">
+                    <div class="section-title">🎯 Intervenants</div>
+                    ${data.intervenantsSolerys ? `<div><strong>Solerys:</strong> ${data.intervenantsSolerys}</div>` : ''}
+                    ${data.intervenantsExterieurs ? `<div><strong>Extérieurs:</strong> ${data.intervenantsExterieurs}</div>` : ''}
+                </div>
+                ` : ''}
+
+                ${data.ppp && data.ppp.length > 0 ? `
                 <div class="section">
                     <div class="section-title">📊 P.P.P. abordées</div>
                     ${data.ppp.map(ppp => `<div class="list-item">• ${ppp}</div>`).join('')}
                 </div>
                 ` : ''}
 
-                ${data.ordreJour.length > 0 ? `
+                ${ordreJour.length > 0 ? `
                 <div class="section">
                     <div class="section-title">📝 Ordre du jour</div>
-                    ${data.ordreJour.map((item, index) => `
+                    ${ordreJour.map((item, index) => `
                         <div class="ordre-jour-item">
                             <strong>${index + 1}. ${item.titre}</strong>
                             ${item.description ? `<div style="margin-top: 5px; font-style: italic;">${item.description}</div>` : ''}
@@ -1588,7 +1491,7 @@ Voulez-vous continuer la génération du PDF ?`);
                 </div>
                 ` : ''}
 
-                ${data.synthese !== 'N/A' ? `
+                ${data.synthese ? `
                 <div class="section">
                     <div class="section-title">📄 Synthèse</div>
                     <div style="white-space: pre-line; background: #f8f9fa; padding: 15px; border-radius: 4px;">${data.synthese}</div>
@@ -1603,48 +1506,16 @@ Voulez-vous continuer la génération du PDF ?`);
             `;
         }
 
-        function imprimerPDF() {
-            try {
-                const printWindow = window.open('', '_blank');
-                if (printWindow) {
-                    printWindow.document.write(document.getElementById('pdfContent').innerHTML);
-                    printWindow.document.close();
-                    printWindow.print();
-                } else {
-                    alert('Veuillez autoriser les fenêtres popup pour imprimer le document.');
-                }
-            } catch (error) {
-                alert('Erreur lors de l\'impression : ' + error.message);
-            }
+        // Fermeture des modals
+        function fermerTemplates() {
+            document.getElementById('templatesModal').style.display = 'none';
         }
 
-        function telechargerPDF() {
-            try {
-                const content = document.getElementById('pdfContent').innerHTML;
-                const date = document.getElementById('date').value || new Date().toISOString().split('T')[0];
-                const filename = `Compte-rendu-VS2-${date}.html`;
-                
-                const blob = new Blob([`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Compte-rendu VS2</title></head><body>${content}</body></html>`], { type: 'text/html' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                a.click();
-                URL.revokeObjectURL(url);
-                
-                alert('📄 Fichier téléchargé ! Ouvrez-le dans votre navigateur et utilisez Ctrl+P pour l\'imprimer en PDF.');
-            } catch (error) {
-                alert('Erreur lors du téléchargement : ' + error.message);
-            }
-        }
-
-        function fermerPDF() {
-            document.getElementById('pdfModal').style.display = 'none';
+        function fermerChargement() {
+            document.getElementById('chargementModal').style.display = 'none';
         }
 
         // Event listeners
-        document.getElementById('heureDebut').addEventListener('change', updateHoraires);
-        document.getElementById('heureFin').addEventListener('change', updateHoraires);
         document.addEventListener('input', updateProgress);
 
         // Fermeture des modals en cliquant à l'extérieur
@@ -1655,10 +1526,6 @@ Voulez-vous continuer la génération du PDF ?`);
                     modal.style.display = 'none';
                 }
             });
-            
-            if (event.target === document.getElementById('pdfModal')) {
-                fermerPDF();
-            }
         });
     </script>
 </body>
