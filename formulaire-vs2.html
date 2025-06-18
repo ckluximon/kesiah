@@ -20,28 +20,39 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 50%, #58d68d 100%);
+            background: linear-gradient(135deg, #8bc34a 0%, #9ccc65 50%, #aed581 100%);
             color: white;
-            padding: 20px;
+            padding: 20px 0;
             position: relative;
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            min-height: 120px;
+            display: flex;
+            align-items: center;
         }
 
         .header::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: float 6s ease-in-out infinite;
+            top: -20%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            z-index: 1;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(-20px, -20px) rotate(180deg); }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            right: -5%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            z-index: 1;
         }
 
         .header-content {
@@ -50,6 +61,10 @@
             align-items: center;
             position: relative;
             z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
         .header-left {
@@ -59,9 +74,10 @@
         }
 
         .website {
-            font-size: 12px;
-            margin-bottom: 5px;
+            font-size: 14px;
+            margin-bottom: 8px;
             opacity: 0.9;
+            font-weight: 300;
         }
 
         .logo-section {
@@ -70,23 +86,43 @@
             gap: 15px;
         }
 
-        .logo {
-            width: 50px;
-            height: 50px;
+        .logo-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
             background: white;
-            border-radius: 50%;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 24px;
-            color: #27ae60;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            font-size: 20px;
+            color: #8bc34a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
 
-        .company {
-            font-size: 18px;
-            font-weight: 600;
+        .company-name {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .solerys {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .oasys {
+            font-size: 14px;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-top: -2px;
         }
 
         .header-right {
@@ -102,6 +138,7 @@
         .meeting-subtitle {
             font-size: 16px;
             opacity: 0.9;
+            font-weight: 300;
         }
 
         @media (max-width: 768px) {
@@ -140,7 +177,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            background: linear-gradient(90deg, #8bc34a, #9ccc65);
             border-radius: 3px;
             transition: width 0.3s ease;
             width: 0%;
@@ -155,10 +192,10 @@
         }
 
         .section h3 {
-            color: #27ae60;
+            color: #8bc34a;
             margin-bottom: 15px;
             font-size: 18px;
-            border-bottom: 2px solid #27ae60;
+            border-bottom: 2px solid #8bc34a;
             padding-bottom: 5px;
         }
 
@@ -195,8 +232,8 @@
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #27ae60;
-            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+            border-color: #8bc34a;
+            box-shadow: 0 0 0 3px rgba(139, 195, 74, 0.1);
         }
 
         .checkbox-grid {
@@ -239,7 +276,7 @@
         }
 
         .btn-primary {
-            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            background: linear-gradient(45deg, #8bc34a, #9ccc65);
             color: white;
         }
 
@@ -387,7 +424,7 @@
         }
 
         .pdf-header {
-            background: #27ae60;
+            background: #8bc34a;
             color: white;
             padding: 15px 20px;
             border-radius: 10px 10px 0 0;
@@ -406,7 +443,7 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #27ae60;
+            background: #8bc34a;
             color: white;
             padding: 10px 15px;
             border-radius: 5px;
@@ -441,8 +478,13 @@
             <div class="header-left">
                 <div class="website">www.solerys.fr</div>
                 <div class="logo-section">
-                    <div class="logo">S</div>
-                    <div class="company">OASYS & Cie</div>
+                    <div class="logo-brand">
+                        <div class="logo-icon">Y</div>
+                        <div class="company-name">
+                            <div class="solerys">SOLERYS</div>
+                            <div class="oasys">OASYS & Cie</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="header-right">
@@ -542,7 +584,7 @@
                 <div class="section">
                     <h3>👥 Participants</h3>
                     
-                    <h4 style="color: #27ae60; margin-bottom: 10px;">Consultants présents :</h4>
+                    <h4 style="color: #8bc34a; margin-bottom: 10px;">Consultants présents :</h4>
                     <div class="checkbox-grid" id="consultantsPresents">
                         <div class="checkbox-item">
                             <input type="checkbox" id="cons1" name="consultants" value="Alicia DOUAIR" onchange="updateAbsents()">
@@ -626,7 +668,7 @@
                 <div class="section">
                     <h3>📊 P.P.P. (Partages des Pratiques Professionnelles)</h3>
                     <div class="checkbox-grid">
-                        <div style="grid-column: 1/-1; font-weight: bold; color: #27ae60; margin-bottom: 10px;">🔍 Suivi et évaluation</div>
+                        <div style="grid-column: 1/-1; font-weight: bold; color: #8bc34a; margin-bottom: 10px;">🔍 Suivi et évaluation</div>
                         <div class="checkbox-item">
                             <input type="checkbox" id="ppp1" name="ppp" value="Suivi des actions précédentes">
                             <label for="ppp1">Suivi des actions précédentes</label>
@@ -640,7 +682,7 @@
                             <label for="ppp3">Évaluation des pratiques</label>
                         </div>
                         
-                        <div style="grid-column: 1/-1; font-weight: bold; color: #27ae60; margin: 20px 0 10px 0;">🛠️ Outils et méthodes</div>
+                        <div style="grid-column: 1/-1; font-weight: bold; color: #8bc34a; margin: 20px 0 10px 0;">🛠️ Outils et méthodes</div>
                         <div class="checkbox-item">
                             <input type="checkbox" id="ppp4" name="ppp" value="Nouveaux outils">
                             <label for="ppp4">Nouveaux outils</label>
@@ -654,7 +696,7 @@
                             <label for="ppp6">Retours d'expérience</label>
                         </div>
 
-                        <div style="grid-column: 1/-1; font-weight: bold; color: #27ae60; margin: 20px 0 10px 0;">⚠️ Points de vigilance</div>
+                        <div style="grid-column: 1/-1; font-weight: bold; color: #8bc34a; margin: 20px 0 10px 0;">⚠️ Points de vigilance</div>
                         <div class="checkbox-item">
                             <input type="checkbox" id="ppp7" name="ppp" value="Difficultés rencontrées">
                             <label for="ppp7">Difficultés rencontrées</label>
@@ -668,7 +710,7 @@
                             <label for="ppp9">Points d'amélioration</label>
                         </div>
 
-                        <div style="grid-column: 1/-1; font-weight: bold; color: #27ae60; margin: 20px 0 10px 0;">🎯 Actions et projets</div>
+                        <div style="grid-column: 1/-1; font-weight: bold; color: #8bc34a; margin: 20px 0 10px 0;">🎯 Actions et projets</div>
                         <div class="checkbox-item">
                             <input type="checkbox" id="ppp10" name="ppp" value="Nouvelles actions">
                             <label for="ppp10">Nouvelles actions</label>
@@ -761,7 +803,7 @@
             <div class="pdf-header">
                 <h2>Compte-rendu de réunion VS2</h2>
                 <div>
-                    <button class="btn" onclick="imprimerPDF()" style="background: white; color: #27ae60; margin-right: 10px;">🖨️ Imprimer</button>
+                    <button class="btn" onclick="imprimerPDF()" style="background: white; color: #8bc34a; margin-right: 10px;">🖨️ Imprimer</button>
                     <button class="btn" onclick="telechargerPDF()" style="background: rgba(255,255,255,0.2); color: white; margin-right: 10px;">💾 Télécharger HTML</button>
                     <button class="btn" onclick="fermerPDF()" style="background: rgba(255,255,255,0.2); color: white;">✕ Fermer</button>
                 </div>
@@ -1437,20 +1479,20 @@ Voulez-vous continuer la génération du PDF ?`);
                         <title>Compte-rendu VS2 - ${formData.date}</title>
                         <style>
                             body { font-family: Arial, sans-serif; line-height: 1.4; margin: 20px; }
-                            .pdf-header { background: #27ae60; color: white; padding: 20px; margin: -20px -20px 30px -20px; text-align: center; }
+                            .pdf-header { background: #8bc34a; color: white; padding: 20px; margin: -20px -20px 30px -20px; text-align: center; }
                             .section { margin-bottom: 25px; page-break-inside: avoid; }
-                            .section-title { color: #27ae60; font-size: 18px; font-weight: bold; border-bottom: 2px solid #27ae60; padding-bottom: 8px; margin-bottom: 15px; }
+                            .section-title { color: #8bc34a; font-size: 18px; font-weight: bold; border-bottom: 2px solid #8bc34a; padding-bottom: 8px; margin-bottom: 15px; }
                             .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px; }
-                            .info-item { background: #f8f9fa; padding: 12px; border-radius: 6px; border-left: 4px solid #27ae60; }
+                            .info-item { background: #f8f9fa; padding: 12px; border-radius: 6px; border-left: 4px solid #8bc34a; }
                             .info-label { font-weight: bold; color: #2c3e50; display: block; margin-bottom: 5px; }
                             .list-item { margin-bottom: 8px; padding-left: 20px; }
                             .ordre-jour-item { background: #f8f9fa; padding: 15px; margin-bottom: 12px; border-radius: 6px; border-left: 4px solid #3498db; }
                             .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #666; border-top: 2px solid #ddd; padding-top: 20px; }
-                            .print-button { background: #27ae60; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 20px 0; }
-                            .print-button:hover { background: #229954; }
+                            .print-button { background: #8bc34a; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 20px 0; }
+                            .print-button:hover { background: #7cb342; }
                             @media print { 
                                 body { margin: 0; }
-                                .pdf-header { background: #27ae60 !important; -webkit-print-color-adjust: exact; }
+                                .pdf-header { background: #8bc34a !important; -webkit-print-color-adjust: exact; }
                                 .no-print { display: none !important; }
                                 .info-item, .ordre-jour-item { border-left: 4px solid #000 !important; }
                             }
@@ -1499,28 +1541,10 @@ Voulez-vous continuer la génération du PDF ?`);
 
         function generatePDFContent(data) {
             return `
-                <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.4; margin: 0; }
-                    .pdf-header { background: #27ae60; color: white; padding: 15px; margin: -20px -20px 20px -20px; text-align: center; }
-                    .section { margin-bottom: 20px; page-break-inside: avoid; }
-                    .section-title { color: #27ae60; font-size: 16px; font-weight: bold; border-bottom: 1px solid #27ae60; padding-bottom: 5px; margin-bottom: 10px; }
-                    .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 15px; }
-                    .info-item { background: #f8f9fa; padding: 8px; border-radius: 4px; }
-                    .info-label { font-weight: bold; color: #2c3e50; }
-                    .list-item { margin-bottom: 5px; padding-left: 15px; }
-                    .ordre-jour-item { background: #f8f9fa; padding: 10px; margin-bottom: 8px; border-radius: 4px; }
-                    .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 15px; }
-                    @media print { 
-                        body { margin: 0; }
-                        .pdf-header { background: #27ae60 !important; }
-                        .no-print { display: none; }
-                    }
-                </style>
-                
                 <div class="pdf-header">
                     <h1>Compte-rendu de Réunion d'équipe VS2</h1>
                     <p>Partages des Pratiques Professionnelles - Solerys</p>
-                    <button onclick="window.print()" class="no-print" style="background: white; color: #27ae60; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-top: 10px;">🖨️ Imprimer / Sauvegarder en PDF</button>
+                    <button onclick="window.print()" class="no-print" style="background: white; color: #8bc34a; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-top: 10px;">🖨️ Imprimer / Sauvegarder en PDF</button>
                 </div>
 
                 <div class="section">
