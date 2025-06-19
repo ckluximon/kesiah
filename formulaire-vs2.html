@@ -1098,80 +1098,7 @@
             this.classList.remove('dragging');
         }
 
-        // Fonction de correction automatique
-        function corrigerTexte(texte) {
-            let corrected = texte;
-            
-            // Corrections orthographiques courantes
-            const corrections = {
-                // Erreurs fréquentes
-                'recus': 'reçus',
-                'recu': 'reçu',
-                'ca': 'ça',
-                'meme': 'même',
-                'deja': 'déjà',
-                'a travers': 'à travers',
-                'grace a': 'grâce à',
-                'pres': 'près',
-                'apres': 'après',
-                'tres': 'très',
-                'ou': 'où',
-                'sur': 'sûr',
-                'du': 'dû',
-                
-                // Accords et conjugaisons
-                'il a était': 'il a été',
-                'nous avons été': 'nous avons été',
-                'nous avons reçus': 'nous avons reçu',
-                'ils ont été': 'ils ont été',
-                
-                // Expressions professionnelles
-                'afin de debut': 'afin de débuter',
-                'concernant': 'concernant',
-                'statistique': 'statistiques',
-                'recommendation': 'recommandations',
-                'professionel': 'professionnel',
-                'practique': 'pratique',
-                'practiques': 'pratiques',
-                
-                // Ponctuation
-                'parcours socle.': 'parcours socle.',
-                'afin que': 'afin que',
-                
-                // Majuscules après point
-                '. nous': '. Nous',
-                '. les': '. Les',
-                '. il': '. Il',
-                '. elle': '. Elle',
-                '. on': '. On',
-                '. angélique': '. Angélique',
-                '. elodie': '. Elodie',
-                '. chitrasen': '. Chitrasen'
-            };
-            
-            // Appliquer les corrections
-            for (const [erreur, correction] of Object.entries(corrections)) {
-                const regex = new RegExp('\\b' + erreur.replace(/[.*+?^${}()|[\]\\]/g, '\\        // Génération de synthèse IA - VERSION 100% NETTOYÉE') + '\\b', 'gi');
-                corrected = corrected.replace(regex, correction);
-            }
-            
-            // Correction de la ponctuation
-            corrected = corrected.replace(/\s+([,.;!?:])/g, '$1'); // Espaces avant ponctuation
-            corrected = corrected.replace(/([.!?])\s*([a-z])/g, '$1 $2'); // Espace après ponctuation
-            corrected = corrected.replace(/([.!?])\s+([A-Z])/g, '$1 $2'); // Espace correct après point
-            
-            // Première lettre en majuscule après point
-            corrected = corrected.replace(/\.\s+([a-z])/g, function(match, p1) {
-                return '. ' + p1.toUpperCase();
-            });
-            
-            // Première lettre du texte en majuscule
-            corrected = corrected.charAt(0).toUpperCase() + corrected.slice(1);
-            
-            return corrected;
-        }
-
-        // Génération de synthèse IA - AVEC CORRECTION AUTOMATIQUE
+        // Génération de synthèse IA - VERSION AVEC CORRECTION ORTHOGRAPHIQUE
         function genererSyntheseIA() {
             const sites = Array.from(document.querySelectorAll('input[name="sites"]:checked')).map(cb => cb.value);
             const presents = Array.from(document.querySelectorAll('input[name="consultants"]:checked')).map(cb => cb.value);
@@ -1181,26 +1108,29 @@
             const ordreJourItems = Array.from(document.querySelectorAll('.ordre-jour-item')).map(item => {
                 const titre = item.querySelector('input[type="text"]')?.value || '';
                 const description = item.querySelector('textarea')?.value || '';
-                return { titre: titre.trim(), description: description.trim() };
+                return { 
+                    titre: corrigerTexte(titre.trim()), 
+                    description: corrigerTexte(description.trim()) 
+                };
             }).filter(item => item.titre !== '');
 
             let synthese = "SYNTHÈSE DE LA SESSION DE PARTAGES DES PRATIQUES PROFESSIONNELLES\n\n";
             
             // CONTEXTE ET PARTICIPATION
-            synthese += "CONTEXTE ET PARTICIPATION\n";
+            synthese += "1. CONTEXTE ET PARTICIPATION\n";
             if (sites.length > 0) {
-                synthese += `Cette session P.P.P. a réuni les équipes d'accompagnement de ${sites.length} site(s) : ${sites.join(', ')}. `;
+                synthese += `Cette session P.P.P. a réuni les équipes d'accompagnement de ${sites.length} site${sites.length > 1 ? 's' : ''} : ${sites.join(', ')}. `;
             }
             
             if (presents.length > 0) {
-                synthese += `La participation active de ${presents.length} consultant(s) en insertion professionnelle a favorisé des échanges constructifs et un partage d'expériences enrichissant.\n\n`;
+                synthese += `La participation active de ${presents.length} consultant${presents.length > 1 ? 's' : ''} en insertion professionnelle a favorisé des échanges constructifs et un partage d'expériences enrichissant.\n\n`;
             }
             
-            // SYNTHÈSE RÉDIGÉE EN PHRASES FLUIDES
+            // SYNTHÈSE RÉDIGÉE EN PHRASES FLUIDES ET CORRIGÉES
             if (ordreJourItems.length > 0) {
-                synthese += "SYNTHESE DES ECHANGES\n";
+                synthese += "2. SYNTHESE DES ECHANGES\n";
                 
-                // Créer un paragraphe fluide basé sur les points
+                // Créer un paragraphe fluide et correct
                 let paragraphe = "";
                 
                 ordreJourItems.forEach((item, index) => {
@@ -1222,28 +1152,60 @@
                 paragraphe += "Ces différents sujets ont permis d'enrichir notre réflexion collective et de renforcer notre approche professionnelle. ";
                 paragraphe += "Les échanges ont été constructifs et ont favorisé l'émergence de nouvelles perspectives d'amélioration de nos pratiques d'accompagnement.";
                 
-                // CORRECTION AUTOMATIQUE DU PARAGRAPHE
-                paragraphe = corrigerTexte(paragraphe);
+                // Corriger le paragraphe complet
+                paragraphe = corrigerParagraphe(paragraphe);
                 
                 synthese += paragraphe + "\n\n";
             }
             
             // P.P.P. - UNIQUEMENT LA LISTE DES CASES COCHÉES
             if (ppp.length > 0) {
-                synthese += "THEMATIQUES P.P.P. ABORDEES\n";
+                synthese += "3. THEMATIQUES P.P.P. ABORDEES\n";
                 ppp.forEach(theme => {
                     synthese += `• ${theme}\n`;
                 });
             }
 
-            // CORRECTION FINALE DE TOUTE LA SYNTHÈSE
-            synthese = corrigerTexte(synthese);
-
             document.getElementById('synthese').value = synthese;
             updateCharCount('synthese', 1000);
             
             // Notification de succès
-            alert(`✅ SYNTHÈSE CORRIGÉE AUTOMATIQUEMENT !\n\n🎯 ${ordreJourItems.length} point(s) transformés en phrases fluides\n📊 ${ppp.length} axe(s) P.P.P. listés simplement\n🔧 Orthographe et syntaxe corrigées automatiquement\n\n❌ Plus de symboles ni d'émojis !`);
+            alert(`✅ SYNTHÈSE CORRIGÉE GÉNÉRÉE !\n\n🎯 ${ordreJourItems.length} point(s) transformés en phrases fluides\n📊 ${ppp.length} axe(s) P.P.P. listés simplement\n✏️ Orthographe et syntaxe corrigées !`);
+        }
+
+        // Fonction de correction orthographique et syntaxique basique
+        function corrigerTexte(texte) {
+            if (!texte) return texte;
+            
+            return texte
+                // Corrections courantes d'orthographe
+                .replace(/\breçus\b/g, 'reçus')
+                .replace(/\brecus\b/g, 'reçus')
+                .replace(/\bstatistique\b/g, 'statistiques')
+                .replace(/\bprofessionel\b/g, 'professionnel')
+                .replace(/\bprofesionnel\b/g, 'professionnel')
+                // Majuscules en début de phrase
+                .replace(/^([a-z])/g, (match, letter) => letter.toUpperCase())
+                // Espaces multiples
+                .replace(/\s+/g, ' ')
+                // Espaces avant ponctuation
+                .replace(/\s+([.,;!?])/g, '$1')
+                .trim();
+        }
+
+        // Fonction de correction de paragraphe
+        function corrigerParagraphe(paragraphe) {
+            return paragraphe
+                // Corrections d'accord
+                .replace(/nous avons reçus/g, 'nous avons reçu')
+                .replace(/nous avons reçu les félicitations/g, 'nous avons reçu des félicitations')
+                // Corrections de syntaxe courantes
+                .replace(/afin que les consultants soient au courant de cette prise en charge/g, 'afin d\'informer les consultants de cette prise en charge')
+                // Majuscules après points
+                .replace(/\.\s+([a-z])/g, (match, letter) => '. ' + letter.toUpperCase())
+                // Nettoyage final
+                .replace(/\s+/g, ' ')
+                .trim();
         }
 
         // Compteur de caractères
@@ -1402,6 +1364,7 @@
             const colorGris = [44, 62, 80];   // #2c3e50
             
             let yPos = 20;
+            let sectionNumber = 1; // Compteur pour les sections
             
             // === EN-TÊTE ===
             doc.setFillColor(...colorVert);
@@ -1418,15 +1381,13 @@
             
             yPos = 50;
             
-            // === 1. INFORMATIONS GÉNÉRALES ===
+            // === INFORMATIONS GÉNÉRALES ===
             doc.setTextColor(...colorVert);
-            doc.setFillColor(...colorVert);
-            doc.rect(15, yPos - 5, 180, 12, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(12);
+            doc.setFontSize(14);
             doc.setFont('helvetica', 'bold');
-            doc.text('1. INFORMATIONS GENERALES', 20, yPos + 2);
-            yPos += 15;
+            doc.text(`${sectionNumber}. INFORMATIONS GENERALES`, 20, yPos);
+            yPos += 10;
+            sectionNumber++;
             
             doc.setTextColor(...colorGris);
             doc.setFontSize(10);
@@ -1446,16 +1407,14 @@
             });
             yPos += 5;
             
-            // === 2. SITES CONCERNÉS ===
+            // === SITES CONCERNÉS ===
             if (formData.sites && formData.sites.length > 0) {
                 doc.setTextColor(...colorVert);
-                doc.setFillColor(...colorVert);
-                doc.rect(15, yPos - 5, 180, 12, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(12);
+                doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
-                doc.text('2. SITES CONCERNES', 20, yPos + 2);
-                yPos += 15;
+                doc.text(`${sectionNumber}. SITES CONCERNES`, 20, yPos);
+                yPos += 8;
+                sectionNumber++;
                 
                 doc.setTextColor(...colorGris);
                 doc.setFontSize(10);
@@ -1467,16 +1426,14 @@
                 yPos += 5;
             }
             
-            // === 3. PARTICIPANTS PRÉSENTS ===
+            // === PARTICIPANTS PRÉSENTS ===
             if (formData.consultants && formData.consultants.length > 0) {
                 doc.setTextColor(...colorVert);
-                doc.setFillColor(...colorVert);
-                doc.rect(15, yPos - 5, 180, 12, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(12);
+                doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
-                doc.text('3. PARTICIPANTS PRESENTS', 20, yPos + 2);
-                yPos += 15;
+                doc.text(`${sectionNumber}. PARTICIPANTS PRESENTS`, 20, yPos);
+                yPos += 8;
+                sectionNumber++;
                 
                 doc.setTextColor(...colorGris);
                 doc.setFontSize(10);
@@ -1488,16 +1445,14 @@
                 yPos += 5;
             }
             
-            // === 4. INTERVENANTS ===
+            // === INTERVENANTS ===
             if (formData.intervenantsSolerys || formData.intervenantsExterieurs) {
                 doc.setTextColor(...colorVert);
-                doc.setFillColor(...colorVert);
-                doc.rect(15, yPos - 5, 180, 12, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(12);
+                doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
-                doc.text('4. INTERVENANTS', 20, yPos + 2);
-                yPos += 15;
+                doc.text(`${sectionNumber}. INTERVENANTS`, 20, yPos);
+                yPos += 8;
+                sectionNumber++;
                 
                 doc.setTextColor(...colorGris);
                 doc.setFontSize(10);
@@ -1521,7 +1476,7 @@
                 yPos += 3;
             }
             
-            // === 5. P.P.P. ABORDÉES ===
+            // === P.P.P. ABORDÉES ===
             if (formData.ppp && formData.ppp.length > 0) {
                 if (yPos > 250) {
                     doc.addPage();
@@ -1529,13 +1484,11 @@
                 }
                 
                 doc.setTextColor(...colorVert);
-                doc.setFillColor(...colorVert);
-                doc.rect(15, yPos - 5, 180, 12, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(12);
+                doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
-                doc.text('5. P.P.P. ABORDEES', 20, yPos + 2);
-                yPos += 15;
+                doc.text(`${sectionNumber}. P.P.P. ABORDEES`, 20, yPos);
+                yPos += 8;
+                sectionNumber++;
                 
                 doc.setTextColor(...colorGris);
                 doc.setFontSize(10);
@@ -1547,7 +1500,7 @@
                 yPos += 5;
             }
             
-            // === 6. ORDRE DU JOUR ===
+            // === ORDRE DU JOUR ===
             const ordreJour = Array.from(document.querySelectorAll('.ordre-jour-item')).map(item => {
                 const titre = item.querySelector('input[type="text"]')?.value || '';
                 const description = item.querySelector('textarea')?.value || '';
@@ -1561,13 +1514,11 @@
                 }
                 
                 doc.setTextColor(...colorVert);
-                doc.setFillColor(...colorVert);
-                doc.rect(15, yPos - 5, 180, 12, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(12);
+                doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
-                doc.text('6. ORDRE DU JOUR', 20, yPos + 2);
-                yPos += 15;
+                doc.text(`${sectionNumber}. ORDRE DU JOUR`, 20, yPos);
+                yPos += 10;
+                sectionNumber++;
                 
                 doc.setTextColor(...colorGris);
                 doc.setFontSize(10);
@@ -1598,7 +1549,7 @@
                 });
             }
             
-            // === 7. SYNTHÈSE ===
+            // === SYNTHÈSE ===
             if (formData.synthese && formData.synthese.trim()) {
                 if (yPos > 200) {
                     doc.addPage();
@@ -1606,13 +1557,10 @@
                 }
                 
                 doc.setTextColor(...colorVert);
-                doc.setFillColor(...colorVert);
-                doc.rect(15, yPos - 5, 180, 12, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(12);
+                doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
-                doc.text('7. SYNTHESE', 20, yPos + 2);
-                yPos += 15;
+                doc.text(`${sectionNumber}. SYNTHESE`, 20, yPos);
+                yPos += 10;
                 
                 doc.setTextColor(...colorGris);
                 doc.setFontSize(9);
