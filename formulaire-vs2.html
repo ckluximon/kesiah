@@ -714,8 +714,7 @@
                     <h3>📝 Ordre du jour</h3>
                     <div class="btn-group">
                         <button type="button" class="btn btn-primary" onclick="ajouterPointOrdreJour()">➕ Ajouter un point</button>
-                        <button type="button" class="btn btn-secondary" onclick="ouvrirTemplates()">📋 Templates</button>
-                        <button type="button" class="btn btn-success" onclick="genererOrdreJourAuto()">🤖 Générer auto</button>
+                        <button type="button" class="btn btn-success" onclick="genererOrdreJourAuto()">🔧 Compléter avec P.P.P.</button>
                     </div>
                     <div id="ordreJourList" style="margin-top: 20px;"></div>
                 </div>
@@ -744,28 +743,6 @@
                     </div>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <!-- Modal Templates -->
-    <div id="templatesModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>📋 Templates d'ordre du jour</h3>
-                <span class="close" onclick="fermerTemplates()">&times;</span>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <button class="btn btn-primary" onclick="appliquerTemplate(1)">Template 1 - Session de suivi opérationnel</button>
-                <p style="font-size: 12px; color: #666; margin: 5px 0;">Bilan d'activité, analyse des difficultés, coordination partenariale</p>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <button class="btn btn-secondary" onclick="appliquerTemplate(2)">Template 2 - Évaluation trimestrielle</button>
-                <p style="font-size: 12px; color: #666; margin: 5px 0;">Indicateurs de performance, innovations pédagogiques, objectifs stratégiques</p>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <button class="btn btn-success" onclick="appliquerTemplate(3)">Template 3 - Analyse des pratiques professionnelles</button>
-                <p style="font-size: 12px; color: #666; margin: 5px 0;">Analyse réflexive, capitalisation d'expériences, amélioration continue</p>
-            </div>
         </div>
     </div>
 
@@ -798,6 +775,7 @@
     <!-- Status de sauvegarde -->
     <div id="saveStatus" class="save-status">💾 Sauvegardé !</div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         let ordreJourCounter = 0;
         const consultantsList = [
@@ -946,79 +924,31 @@
             button.parentElement.remove();
         }
 
-        // Templates d'ordre du jour
-        function ouvrirTemplates() {
-            document.getElementById('templatesModal').style.display = 'block';
-        }
-
-        function fermerTemplates() {
-            document.getElementById('templatesModal').style.display = 'none';
-        }
-
-        function appliquerTemplate(templateId) {
-            const templates = {
-                1: [
-                    { titre: 'Tour de table et actualités professionnelles', description: 'Présentation des participants, évolution des dispositifs et actualités du secteur de l\'insertion' },
-                    { titre: 'Bilan d\'activité et indicateurs de performance', description: 'Analyse des résultats quantitatifs et qualitatifs de la période écoulée, taux de sorties positives' },
-                    { titre: 'Difficultés d\'accompagnement et solutions développées', description: 'Identification des freins rencontrés, partage de stratégies de contournement et bonnes pratiques' },
-                    { titre: 'Coordination partenariale et développement territorial', description: 'Point sur les relations avec les entreprises, collectivités et organismes de formation' },
-                    { titre: 'Plan d\'action et échéances opérationnelles', description: 'Définition des priorités, planning des actions et modalités de suivi' }
-                ],
-                2: [
-                    { titre: 'Évaluation trimestrielle des parcours d\'accompagnement', description: 'Analyse des indicateurs de performance, durée moyenne des parcours, taux d\'insertion' },
-                    { titre: 'Retours d\'expérience sur les innovations pédagogiques', description: 'Présentation des nouvelles méthodologies testées et évaluation de leur efficacité' },
-                    { titre: 'Satisfaction des bénéficiaires et qualité de service', description: 'Analyse des enquêtes de satisfaction, points d\'amélioration identifiés' },
-                    { titre: 'Objectifs stratégiques pour le trimestre suivant', description: 'Définition des priorités d\'action, nouvelles orientations méthodologiques' },
-                    { titre: 'Besoins de formation et développement des compétences', description: 'Identification des besoins en formation continue, plan de professionnalisation' }
-                ],
-                3: [
-                    { titre: 'Analyse réflexive des pratiques d\'accompagnement', description: 'Évaluation critique des méthodes utilisées, identification des leviers d\'amélioration' },
-                    { titre: 'Capitalisation des expériences et cas pratiques', description: 'Partage de situations complexes, co-construction de réponses adaptées' },
-                    { titre: 'Identification des bonnes pratiques transférables', description: 'Recensement des innovations réussies, modalités de généralisation' },
-                    { titre: 'Axes d\'amélioration continue et plan de progrès', description: 'Définition des orientations d\'amélioration, indicateurs de suivi de la qualité' },
-                    { titre: 'Engagement sur les actions de développement', description: 'Validation du plan d\'action, répartition des responsabilités, calendrier de mise en œuvre' }
-                ]
-            };
-
-            const points = templates[templateId];
-            const container = document.getElementById('ordreJourList');
-            container.innerHTML = '';
-            
-            points.forEach(point => {
-                ordreJourCounter++;
-                const div = document.createElement('div');
-                div.className = 'ordre-jour-item';
-                div.draggable = true;
-                div.innerHTML = `
-                    <button type="button" class="delete-item" onclick="supprimerPoint(this)">🗑️</button>
-                    <div style="margin-bottom: 10px;">
-                        <input type="text" value="${point.titre}" style="width: 100%; margin-bottom: 10px; font-size: 16px; padding: 12px; font-weight: 600;">
-                        <textarea style="width: 100%; font-size: 14px; padding: 12px; min-height: 80px;">${point.description}</textarea>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-            
-            setupDragAndDrop();
-            fermerTemplates();
-        }
-
-        // Génération automatique basée sur les P.P.P.
+        // Génération automatique basée sur les P.P.P. - VERSION CORRIGÉE
         function genererOrdreJourAuto() {
             const pppChecked = Array.from(document.querySelectorAll('input[name="ppp"]:checked'))
                 .map(cb => cb.value);
             
             if (pppChecked.length === 0) {
-                alert('Veuillez sélectionner au moins une thématique P.P.P. pour générer l\'ordre du jour automatiquement.');
+                alert('Veuillez sélectionner au moins une thématique P.P.P. pour compléter l\'ordre du jour automatiquement.');
                 return;
             }
 
+            // Information claire à l'utilisateur
+            const existingItems = document.getElementById('ordreJourList').querySelectorAll('.ordre-jour-item');
+            if (existingItems.length > 0) {
+                const confirmer = confirm(`✅ COMPLÉTER L'ORDRE DU JOUR\n\nVous avez déjà ${existingItems.length} point(s) dans votre ordre du jour.\n\nCette action va AJOUTER les points P.P.P. sélectionnés à votre ordre du jour existant.\n\n➤ Voulez-vous continuer ?`);
+                if (!confirmer) {
+                    return;
+                }
+            }
+
             const container = document.getElementById('ordreJourList');
-            // Ne plus effacer le contenu existant - on ajoute aux points existants
             
-            // Ajouter les points fixes seulement si la liste est vide
-            const existingItems = container.querySelectorAll('.ordre-jour-item');
-            if (existingItems.length === 0) {
+            // ❌ NE JAMAIS EFFACER LE CONTENU EXISTANT ❌
+            // Ajouter les points fixes seulement si la liste est complètement vide
+            const existingItemsAfterConfirm = container.querySelectorAll('.ordre-jour-item');
+            if (existingItemsAfterConfirm.length === 0) {
                 const pointsIntroductifs = [
                     { 
                         titre: 'Ouverture de la séance et tour de table', 
@@ -1168,99 +1098,72 @@
             this.classList.remove('dragging');
         }
 
-        // Génération de synthèse IA
+        // Génération de synthèse IA - VERSION RÉDIGÉE
         function genererSyntheseIA() {
             const sites = Array.from(document.querySelectorAll('input[name="sites"]:checked')).map(cb => cb.value);
             const presents = Array.from(document.querySelectorAll('input[name="consultants"]:checked')).map(cb => cb.value);
             const ppp = Array.from(document.querySelectorAll('input[name="ppp"]:checked')).map(cb => cb.value);
             
-            // Récupérer les points de l'ordre du jour saisis (titre + description)
+            // 🎯 Récupérer les points de l'ordre du jour saisis par l'utilisateur
             const ordreJourItems = Array.from(document.querySelectorAll('.ordre-jour-item')).map(item => {
                 const titre = item.querySelector('input[type="text"]')?.value || '';
                 const description = item.querySelector('textarea')?.value || '';
-                return { titre, description };
-            }).filter(item => item.titre.trim() !== '');
+                return { titre: titre.trim(), description: description.trim() };
+            }).filter(item => item.titre !== '');
 
             let synthese = "SYNTHÈSE DE LA SESSION DE PARTAGES DES PRATIQUES PROFESSIONNELLES\n\n";
             
+            // CONTEXTE ET PARTICIPATION
             synthese += "📋 CONTEXTE ET PARTICIPATION\n";
             if (sites.length > 0) {
-                synthese += `Cette session P.P.P. a mobilisé les équipes d'accompagnement de ${sites.length} site(s) : ${sites.join(', ')}. `;
+                synthese += `Cette session P.P.P. a réuni les équipes d'accompagnement de ${sites.length} site(s) : ${sites.join(', ')}. `;
             }
             
             if (presents.length > 0) {
-                synthese += `L'implication de ${presents.length} consultant(s) en insertion professionnelle a permis une dynamique collaborative riche et constructive.\n\n`;
+                synthese += `La participation active de ${presents.length} consultant(s) en insertion professionnelle a favorisé des échanges constructifs et un partage d'expériences enrichissant.\n\n`;
             }
             
-            // PRIORITÉ : Points abordés selon l'ordre du jour saisi
+            // POINTS ABORDÉS - RÉDACTION FLUIDE ET PROFESSIONNELLE
             if (ordreJourItems.length > 0) {
-                synthese += "🎯 POINTS ABORDÉS LORS DE LA SÉANCE\n";
-                synthese += "Les thématiques suivantes ont été développées et analysées :\n\n";
+                synthese += "🎯 SYNTHÈSE DES ÉCHANGES\n";
                 
+                // Introduction
+                synthese += `Au cours de cette session, ${ordreJourItems.length} thématique${ordreJourItems.length > 1 ? 's ont été' : ' a été'} développée${ordreJourItems.length > 1 ? 's' : ''} et analysée${ordreJourItems.length > 1 ? 's' : ''} collectivement.\n\n`;
+                
+                // Rédaction des points en phrases construites
                 ordreJourItems.forEach((item, index) => {
-                    synthese += `${index + 1}. ${item.titre.toUpperCase()}\n`;
-                    if (item.description.trim()) {
-                        synthese += `   ${item.description}\n`;
-                        synthese += "   → Échanges constructifs et identification de leviers d'action concrets\n\n";
+                    if (index === 0) {
+                        synthese += `Nous avons d'abord abordé la question de "${item.titre.toLowerCase()}"`;
+                    } else if (index === ordreJourItems.length - 1 && ordreJourItems.length > 1) {
+                        synthese += ` Enfin, notre attention s'est portée sur "${item.titre.toLowerCase()}"`;
                     } else {
-                        synthese += "   → Point développé avec analyse approfondie des enjeux et perspectives d'amélioration\n\n";
+                        synthese += ` Par ailleurs, nos échanges ont porté sur "${item.titre.toLowerCase()}"`;
                     }
+                    
+                    if (item.description) {
+                        synthese += `, nous permettant d'examiner ${item.description.toLowerCase()}`;
+                    }
+                    
+                    synthese += `. Cette discussion a enrichi notre réflexion collective et nous a permis d'identifier des axes d'amélioration concrets.\n\n`;
                 });
+                
+                // Conclusion des échanges
+                synthese += `L'ensemble de ces échanges a favorisé une meilleure compréhension des enjeux professionnels et a renforcé notre cohésion d'équipe autour des pratiques d'accompagnement.\n\n`;
             }
             
-            // Compléter avec les P.P.P. si cochées
+            // THÉMATIQUES P.P.P. - SIMPLE LISTE
             if (ppp.length > 0) {
-                synthese += "📊 AXES P.P.P. TRANSVERSAUX INTÉGRÉS\n";
-                synthese += "Les dimensions suivantes ont enrichi les discussions :\n";
+                synthese += "📊 THÉMATIQUES P.P.P. ABORDÉES\n";
                 ppp.forEach(theme => {
-                    const descriptions = {
-                        'Suivi des actions précédentes': '• Évaluation de l\'efficacité des dispositifs d\'accompagnement précédemment mis en œuvre',
-                        'Bilan des indicateurs': '• Analyse des tableaux de bord et indicateurs de performance des parcours d\'insertion',
-                        'Évaluation des pratiques': '• Analyse réflexive des méthodes d\'intervention et techniques d\'accompagnement',
-                        'Nouveaux outils': '• Présentation et expérimentation d\'outils innovants d\'accompagnement',
-                        'Méthodes innovantes': '• Développement de démarches novatrices adaptées aux spécificités du public',
-                        'Retours d\'expérience': '• Capitalisation des expériences terrain et co-construction de solutions',
-                        'Difficultés rencontrées': '• Identification des freins à l\'insertion et stratégies de contournement',
-                        'Risques identifiés': '• Anticipation des risques de rupture de parcours et mesures préventives',
-                        'Points d\'amélioration': '• Optimisation des parcours d\'accompagnement et amélioration continue',
-                        'Nouvelles actions': '• Définition des priorités d\'action et nouvelles stratégies d\'intervention',
-                        'Planning des projets': '• Coordination des projets d\'insertion et planification territoriale',
-                        'Ressources nécessaires': '• Mobilisation des ressources et développement de partenariats stratégiques'
-                    };
-                    synthese += descriptions[theme] || `• ${theme}`;
-                    synthese += '\n';
+                    synthese += `• ${theme}\n`;
                 });
-                synthese += '\n';
             }
-            
-            synthese += "💡 APPORTS MÉTHODOLOGIQUES\n";
-            synthese += "• Enrichissement mutuel des pratiques professionnelles par le partage d'expériences\n";
-            synthese += "• Harmonisation des méthodes d'intervention sur l'ensemble du territoire\n";
-            synthese += "• Renforcement de la cohérence des parcours d'accompagnement\n";
-            synthese += "• Développement d'une culture commune de l'évaluation et de l'amélioration continue\n\n";
-            
-            synthese += "🔍 ANALYSE QUALITATIVE\n";
-            synthese += "La session a permis d'identifier plusieurs leviers d'optimisation :\n";
-            synthese += "• Amélioration de la personnalisation des parcours d'accompagnement\n";
-            synthese += "• Renforcement de la coordination avec les acteurs du territoire\n";
-            synthese += "• Développement de nouvelles modalités d'intervention adaptées aux évolutions du marché de l'emploi\n";
-            synthese += "• Capitalisation systématique des innovations pédagogiques\n\n";
-            
-            synthese += "📊 INDICATEURS DE QUALITÉ\n";
-            synthese += "• Taux de participation élevé témoignant de l'engagement des équipes\n";
-            synthese += "• Qualité des échanges et richesse des retours d'expérience partagés\n";
-            synthese += "• Dynamique collaborative favorisant l'émergence de solutions innovantes\n";
-            synthese += "• Appropriation collective des enjeux de développement professionnel\n\n";
-            
-            synthese += "🎯 PLAN D'ACTION ET PERSPECTIVES\n";
-            synthese += "Les orientations retenues s'articulent autour de :\n";
-            synthese += "• La systématisation des pratiques identifiées comme efficientes\n";
-            synthese += "• Le renforcement des compétences par la formation continue\n";
-            synthese += "• L'optimisation des outils d'accompagnement et de suivi\n";
-            synthese += "• La consolidation des partenariats opérationnels avec les entreprises du territoire";
 
             document.getElementById('synthese').value = synthese;
             updateCharCount('synthese', 1000);
+            
+            // Notification de succès
+            alert(`✅ SYNTHÈSE RÉDIGÉE AVEC SUCCÈS !\n\n🎯 ${ordreJourItems.length} point(s) de votre ordre du jour développés\n📊 ${ppp.length} axe(s) P.P.P. listés\n\nLa synthèse est rédigée en phrases construites !`);
         }
 
         // Compteur de caractères
@@ -1406,137 +1309,259 @@
             }
         }
 
-        // Génération PDF
+        // Génération PDF - VRAI PDF avec jsPDF
         function genererPDF() {
             const formData = collectFormData();
-            const pdfContent = generatePDFContent(formData);
             
-            // Ouvrir dans une nouvelle fenêtre
-            const pdfWindow = window.open('', '_blank');
-            pdfWindow.document.write(`
-                <!DOCTYPE html>
-                <html lang="fr">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>Compte-rendu VS2 - ${formData.date}</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; line-height: 1.4; margin: 20px; }
-                        .pdf-header { background: #8bc34a; color: white; padding: 20px; margin: -20px -20px 30px -20px; text-align: center; }
-                        .section { margin-bottom: 25px; page-break-inside: avoid; }
-                        .section-title { color: #8bc34a; font-size: 18px; font-weight: bold; border-bottom: 2px solid #8bc34a; padding-bottom: 8px; margin-bottom: 15px; }
-                        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px; }
-                        .info-item { background: #f8f9fa; padding: 12px; border-radius: 6px; border-left: 4px solid #8bc34a; }
-                        .info-label { font-weight: bold; color: #2c3e50; display: block; margin-bottom: 5px; }
-                        .list-item { margin-bottom: 8px; padding-left: 20px; }
-                        .ordre-jour-item { background: #f8f9fa; padding: 15px; margin-bottom: 12px; border-radius: 6px; border-left: 4px solid #3498db; }
-                        .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #666; border-top: 2px solid #ddd; padding-top: 20px; }
-                        .print-button { background: #8bc34a; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 20px 0; }
-                        .print-button:hover { background: #7cb342; }
-                        @media print { 
-                            body { margin: 0; }
-                            .pdf-header { background: #8bc34a !important; -webkit-print-color-adjust: exact; }
-                            .no-print { display: none !important; }
-                            .info-item, .ordre-jour-item { border-left: 4px solid #000 !important; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    ${pdfContent}
-                    <div class="no-print" style="text-align: center; margin: 30px 0;">
-                        <button onclick="window.print()" class="print-button">🖨️ Imprimer / Sauvegarder en PDF</button>
-                        <button onclick="window.close()" class="print-button" style="background: #95a5a6; margin-left: 10px;">✕ Fermer</button>
-                    </div>
-                </body>
-                </html>
-            `);
-            pdfWindow.document.close();
-        }
-
-        function generatePDFContent(data) {
+            // Créer un nouveau document PDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Configuration des couleurs
+            const colorVert = [139, 195, 74]; // #8bc34a
+            const colorGris = [44, 62, 80];   // #2c3e50
+            
+            let yPos = 20;
+            
+            // === EN-TÊTE ===
+            doc.setFillColor(...colorVert);
+            doc.rect(0, 0, 210, 40, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Compte-rendu de Réunion d\'équipe VS2', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Partages des Pratiques Professionnelles - Solerys', 105, 30, { align: 'center' });
+            
+            yPos = 50;
+            
+            // === INFORMATIONS GÉNÉRALES ===
+            doc.setTextColor(...colorVert);
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.text('📋 Informations générales', 20, yPos);
+            yPos += 10;
+            
+            doc.setTextColor(...colorGris);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            
+            const infos = [
+                `Référence: ${formData.reference || 'N/A'}`,
+                `Date: ${formData.date || 'N/A'}`,
+                `Horaires: ${formData.heureDebut || 'N/A'} à ${formData.heureFin || 'N/A'}`,
+                `Animateur: ${formData.animateur || 'N/A'}`,
+                `Modalité: ${formData.modalite || 'N/A'}`
+            ];
+            
+            infos.forEach(info => {
+                doc.text(info, 20, yPos);
+                yPos += 5;
+            });
+            yPos += 5;
+            
+            // === SITES CONCERNÉS ===
+            if (formData.sites && formData.sites.length > 0) {
+                doc.setTextColor(...colorVert);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('🏢 Sites concernés', 20, yPos);
+                yPos += 8;
+                
+                doc.setTextColor(...colorGris);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                formData.sites.forEach(site => {
+                    doc.text(`• ${site}`, 25, yPos);
+                    yPos += 4;
+                });
+                yPos += 5;
+            }
+            
+            // === PARTICIPANTS PRÉSENTS ===
+            if (formData.consultants && formData.consultants.length > 0) {
+                doc.setTextColor(...colorVert);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('👥 Participants présents', 20, yPos);
+                yPos += 8;
+                
+                doc.setTextColor(...colorGris);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                formData.consultants.forEach(consultant => {
+                    doc.text(`• ${consultant}`, 25, yPos);
+                    yPos += 4;
+                });
+                yPos += 5;
+            }
+            
+            // === INTERVENANTS ===
+            if (formData.intervenantsSolerys || formData.intervenantsExterieurs) {
+                doc.setTextColor(...colorVert);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('🎯 Intervenants', 20, yPos);
+                yPos += 8;
+                
+                doc.setTextColor(...colorGris);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                
+                if (formData.intervenantsSolerys) {
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('Solerys:', 25, yPos);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(formData.intervenantsSolerys, 50, yPos);
+                    yPos += 5;
+                }
+                
+                if (formData.intervenantsExterieurs) {
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('Extérieurs:', 25, yPos);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(formData.intervenantsExterieurs, 55, yPos);
+                    yPos += 5;
+                }
+                yPos += 3;
+            }
+            
+            // === P.P.P. ABORDÉES ===
+            if (formData.ppp && formData.ppp.length > 0) {
+                if (yPos > 250) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                doc.setTextColor(...colorVert);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('📊 P.P.P. abordées', 20, yPos);
+                yPos += 8;
+                
+                doc.setTextColor(...colorGris);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                formData.ppp.forEach(ppp => {
+                    doc.text(`• ${ppp}`, 25, yPos);
+                    yPos += 4;
+                });
+                yPos += 5;
+            }
+            
+            // === ORDRE DU JOUR ===
             const ordreJour = Array.from(document.querySelectorAll('.ordre-jour-item')).map(item => {
                 const titre = item.querySelector('input[type="text"]')?.value || '';
                 const description = item.querySelector('textarea')?.value || '';
                 return { titre, description };
             }).filter(item => item.titre);
+            
+            if (ordreJour.length > 0) {
+                if (yPos > 200) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                doc.setTextColor(...colorVert);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('📝 Ordre du jour', 20, yPos);
+                yPos += 10;
+                
+                doc.setTextColor(...colorGris);
+                doc.setFontSize(10);
+                
+                ordreJour.forEach((item, index) => {
+                    if (yPos > 270) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(`${index + 1}. ${item.titre}`, 25, yPos);
+                    yPos += 5;
+                    
+                    if (item.description) {
+                        doc.setFont('helvetica', 'normal');
+                        const lines = doc.splitTextToSize(item.description, 160);
+                        lines.forEach(line => {
+                            if (yPos > 280) {
+                                doc.addPage();
+                                yPos = 20;
+                            }
+                            doc.text(line, 30, yPos);
+                            yPos += 4;
+                        });
+                    }
+                    yPos += 3;
+                });
+            }
+            
+            // === SYNTHÈSE ===
+            if (formData.synthese && formData.synthese.trim()) {
+                if (yPos > 200) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                doc.setTextColor(...colorVert);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('📄 Synthèse', 20, yPos);
+                yPos += 10;
+                
+                doc.setTextColor(...colorGris);
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'normal');
+                
+                const syntheseLines = doc.splitTextToSize(formData.synthese, 170);
+                syntheseLines.forEach(line => {
+                    if (yPos > 280) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    doc.text(line, 20, yPos);
+                    yPos += 4;
+                });
+            }
+            
+            // === FOOTER ===
+            const pageCount = doc.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setTextColor(150, 150, 150);
+                doc.setFontSize(8);
+                doc.text('SOLERYS - OASYS & Cie | www.solerys.fr', 105, 290, { align: 'center' });
+                doc.text(`Document généré le ${new Date().toLocaleDateString('fr-FR')} à ${new Date().toLocaleTimeString('fr-FR')}`, 105, 295, { align: 'center' });
+                doc.text(`Page ${i} / ${pageCount}`, 190, 295);
+            }
+            
+            // Télécharger le PDF
+            const fileName = `compte-rendu-vs2-${formData.date || 'sans-date'}.pdf`;
+            doc.save(fileName);
+            
+            // Message de confirmation
+            alert(`✅ PDF GÉNÉRÉ AVEC SUCCÈS !\n\n📁 Fichier téléchargé : ${fileName}\n📍 Emplacement : Dossier Téléchargements`);
+        }
 
-            return `
-                <div class="pdf-header">
-                    <h1>Compte-rendu de Réunion d'équipe VS2</h1>
-                    <p>Partages des Pratiques Professionnelles - Solerys</p>
-                </div>
-
-                <div class="section">
-                    <div class="section-title">📋 Informations générales</div>
-                    <div class="info-grid">
-                        <div class="info-item"><span class="info-label">Référence:</span> ${data.reference || 'N/A'}</div>
-                        <div class="info-item"><span class="info-label">Date:</span> ${data.date || 'N/A'}</div>
-                        <div class="info-item"><span class="info-label">Horaires:</span> ${data.heureDebut || 'N/A'} à ${data.heureFin || 'N/A'}</div>
-                        <div class="info-item"><span class="info-label">Animateur:</span> ${data.animateur || 'N/A'}</div>
-                        <div class="info-item"><span class="info-label">Modalité:</span> ${data.modalite || 'N/A'}</div>
-                    </div>
-                </div>
-
-                ${data.sites && data.sites.length > 0 ? `
-                <div class="section">
-                    <div class="section-title">🏢 Sites concernés</div>
-                    ${data.sites.map(site => `<div class="list-item">• ${site}</div>`).join('')}
-                </div>
-                ` : ''}
-
-                ${data.consultants && data.consultants.length > 0 ? `
-                <div class="section">
-                    <div class="section-title">👥 Participants présents</div>
-                    ${data.consultants.map(consultant => `<div class="list-item">• ${consultant}</div>`).join('')}
-                </div>
-                ` : ''}
-
-                ${data.intervenantsSolerys || data.intervenantsExterieurs ? `
-                <div class="section">
-                    <div class="section-title">🎯 Intervenants</div>
-                    ${data.intervenantsSolerys ? `<div><strong>Solerys:</strong> ${data.intervenantsSolerys}</div>` : ''}
-                    ${data.intervenantsExterieurs ? `<div><strong>Extérieurs:</strong> ${data.intervenantsExterieurs}</div>` : ''}
-                </div>
-                ` : ''}
-
-                ${data.ppp && data.ppp.length > 0 ? `
-                <div class="section">
-                    <div class="section-title">📊 P.P.P. abordées</div>
-                    ${data.ppp.map(ppp => `<div class="list-item">• ${ppp}</div>`).join('')}
-                </div>
-                ` : ''}
-
-                ${ordreJour.length > 0 ? `
-                <div class="section">
-                    <div class="section-title">📝 Ordre du jour</div>
-                    ${ordreJour.map((item, index) => `
-                        <div class="ordre-jour-item">
-                            <strong>${index + 1}. ${item.titre}</strong>
-                            ${item.description ? `<div style="margin-top: 5px; font-style: italic;">${item.description}</div>` : ''}
-                        </div>
-                    `).join('')}
-                </div>
-                ` : ''}
-
-                ${data.synthese ? `
-                <div class="section">
-                    <div class="section-title">📄 Synthèse</div>
-                    <div style="white-space: pre-line; background: #f8f9fa; padding: 15px; border-radius: 4px;">${data.synthese}</div>
-                </div>
-                ` : ''}
-
-                <div class="footer">
-                    <strong>SOLERYS - OASYS & Cie</strong><br>
-                    www.solerys.fr<br>
-                    Document généré le ${new Date().toLocaleDateString('fr-FR')} à ${new Date().toLocaleTimeString('fr-FR')}
-                </div>
-            `;
+        // Fonction pour télécharger le HTML (simplifiée)
+        function downloadHTML(htmlContent, filename) {
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         // Fermeture des modals
-        function fermerTemplates() {
-            document.getElementById('templatesModal').style.display = 'none';
-        }
-
         function fermerChargement() {
             document.getElementById('chargementModal').style.display = 'none';
         }
