@@ -1014,34 +1014,37 @@
             }
 
             const container = document.getElementById('ordreJourList');
-            container.innerHTML = '';
+            // Ne plus effacer le contenu existant - on ajoute aux points existants
             
-            // Points fixes professionnels
-            const pointsIntroductifs = [
-                { 
-                    titre: 'Ouverture de la séance et tour de table', 
-                    description: 'Présentation des participants, validation de l\'ordre du jour et objectifs de la séance'
-                },
-                { 
-                    titre: 'Bilan des actions de développement précédentes', 
-                    description: 'Évaluation de la mise en œuvre des actions définies lors de la dernière session P.P.P.'
-                }
-            ];
-            
-            pointsIntroductifs.forEach(point => {
-                ordreJourCounter++;
-                const div = document.createElement('div');
-                div.className = 'ordre-jour-item';
-                div.draggable = true;
-                div.innerHTML = `
-                    <button type="button" class="delete-item" onclick="supprimerPoint(this)">🗑️</button>
-                    <div style="margin-bottom: 10px;">
-                        <input type="text" value="${point.titre}" style="width: 100%; margin-bottom: 10px; font-size: 16px; padding: 12px; font-weight: 600;">
-                        <textarea style="width: 100%; font-size: 14px; padding: 12px; min-height: 80px;">${point.description}</textarea>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
+            // Ajouter les points fixes seulement si la liste est vide
+            const existingItems = container.querySelectorAll('.ordre-jour-item');
+            if (existingItems.length === 0) {
+                const pointsIntroductifs = [
+                    { 
+                        titre: 'Ouverture de la séance et tour de table', 
+                        description: 'Présentation des participants, validation de l\'ordre du jour et objectifs de la séance'
+                    },
+                    { 
+                        titre: 'Bilan des actions de développement précédentes', 
+                        description: 'Évaluation de la mise en œuvre des actions définies lors de la dernière session P.P.P.'
+                    }
+                ];
+                
+                pointsIntroductifs.forEach(point => {
+                    ordreJourCounter++;
+                    const div = document.createElement('div');
+                    div.className = 'ordre-jour-item';
+                    div.draggable = true;
+                    div.innerHTML = `
+                        <button type="button" class="delete-item" onclick="supprimerPoint(this)">🗑️</button>
+                        <div style="margin-bottom: 10px;">
+                            <input type="text" value="${point.titre}" style="width: 100%; margin-bottom: 10px; font-size: 16px; padding: 12px; font-weight: 600;">
+                            <textarea style="width: 100%; font-size: 14px; padding: 12px; min-height: 80px;">${point.description}</textarea>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            }
 
             // Points basés sur les P.P.P. avec langage professionnel
             const mappingPPP = {
@@ -1170,7 +1173,13 @@
             const sites = Array.from(document.querySelectorAll('input[name="sites"]:checked')).map(cb => cb.value);
             const presents = Array.from(document.querySelectorAll('input[name="consultants"]:checked')).map(cb => cb.value);
             const ppp = Array.from(document.querySelectorAll('input[name="ppp"]:checked')).map(cb => cb.value);
-            const ordreJour = Array.from(document.querySelectorAll('.ordre-jour-item input[type="text"]')).map(input => input.value).filter(val => val);
+            
+            // Récupérer les points de l'ordre du jour saisis (titre + description)
+            const ordreJourItems = Array.from(document.querySelectorAll('.ordre-jour-item')).map(item => {
+                const titre = item.querySelector('input[type="text"]')?.value || '';
+                const description = item.querySelector('textarea')?.value || '';
+                return { titre, description };
+            }).filter(item => item.titre.trim() !== '');
 
             let synthese = "SYNTHÈSE DE LA SESSION DE PARTAGES DES PRATIQUES PROFESSIONNELLES\n\n";
             
@@ -1183,9 +1192,26 @@
                 synthese += `L'implication de ${presents.length} consultant(s) en insertion professionnelle a permis une dynamique collaborative riche et constructive.\n\n`;
             }
             
-            synthese += "🎯 THÉMATIQUES DÉVELOPPÉES\n";
+            // PRIORITÉ : Points abordés selon l'ordre du jour saisi
+            if (ordreJourItems.length > 0) {
+                synthese += "🎯 POINTS ABORDÉS LORS DE LA SÉANCE\n";
+                synthese += "Les thématiques suivantes ont été développées et analysées :\n\n";
+                
+                ordreJourItems.forEach((item, index) => {
+                    synthese += `${index + 1}. ${item.titre.toUpperCase()}\n`;
+                    if (item.description.trim()) {
+                        synthese += `   ${item.description}\n`;
+                        synthese += "   → Échanges constructifs et identification de leviers d'action concrets\n\n";
+                    } else {
+                        synthese += "   → Point développé avec analyse approfondie des enjeux et perspectives d'amélioration\n\n";
+                    }
+                });
+            }
+            
+            // Compléter avec les P.P.P. si cochées
             if (ppp.length > 0) {
-                synthese += "Les axes de travail prioritaires identifiés et traités lors de cette session :\n";
+                synthese += "📊 AXES P.P.P. TRANSVERSAUX INTÉGRÉS\n";
+                synthese += "Les dimensions suivantes ont enrichi les discussions :\n";
                 ppp.forEach(theme => {
                     const descriptions = {
                         'Suivi des actions précédentes': '• Évaluation de l\'efficacité des dispositifs d\'accompagnement précédemment mis en œuvre',
