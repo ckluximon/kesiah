@@ -1098,13 +1098,13 @@
             this.classList.remove('dragging');
         }
 
-        // Génération de synthèse IA - VRAIES PHRASES CONSTRUITES
+        // Génération de synthèse IA - VERSION 100% NETTOYÉE
         function genererSyntheseIA() {
             const sites = Array.from(document.querySelectorAll('input[name="sites"]:checked')).map(cb => cb.value);
             const presents = Array.from(document.querySelectorAll('input[name="consultants"]:checked')).map(cb => cb.value);
             const ppp = Array.from(document.querySelectorAll('input[name="ppp"]:checked')).map(cb => cb.value);
             
-            // 🎯 Récupérer les points de l'ordre du jour saisis par l'utilisateur
+            // Récupérer les points de l'ordre du jour saisis par l'utilisateur
             const ordreJourItems = Array.from(document.querySelectorAll('.ordre-jour-item')).map(item => {
                 const titre = item.querySelector('input[type="text"]')?.value || '';
                 const description = item.querySelector('textarea')?.value || '';
@@ -1152,7 +1152,7 @@
                 synthese += paragraphe + "\n\n";
             }
             
-            // P.P.P. - JUSTE LA LISTE SIMPLE
+            // P.P.P. - UNIQUEMENT LA LISTE DES CASES COCHÉES
             if (ppp.length > 0) {
                 synthese += "📊 THÉMATIQUES P.P.P. ABORDÉES\n";
                 ppp.forEach(theme => {
@@ -1160,11 +1160,13 @@
                 });
             }
 
+            // FIN - PAS D'AUTRE TEXTE !
+
             document.getElementById('synthese').value = synthese;
             updateCharCount('synthese', 1000);
             
             // Notification de succès
-            alert(`✅ SYNTHÈSE RÉDIGÉE AVEC SUCCÈS !\n\n🎯 ${ordreJourItems.length} point(s) transformés en phrases fluides\n📊 ${ppp.length} axe(s) P.P.P. listés simplement`);
+            alert(`✅ SYNTHÈSE PROPRE GÉNÉRÉE !\n\n🎯 ${ordreJourItems.length} point(s) transformés en phrases fluides\n📊 ${ppp.length} axe(s) P.P.P. listés simplement\n\n❌ Plus de texte générique !`);
         }
 
         // Compteur de caractères
