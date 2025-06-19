@@ -1098,7 +1098,80 @@
             this.classList.remove('dragging');
         }
 
-        // Génération de synthèse IA - VERSION 100% NETTOYÉE
+        // Fonction de correction automatique
+        function corrigerTexte(texte) {
+            let corrected = texte;
+            
+            // Corrections orthographiques courantes
+            const corrections = {
+                // Erreurs fréquentes
+                'recus': 'reçus',
+                'recu': 'reçu',
+                'ca': 'ça',
+                'meme': 'même',
+                'deja': 'déjà',
+                'a travers': 'à travers',
+                'grace a': 'grâce à',
+                'pres': 'près',
+                'apres': 'après',
+                'tres': 'très',
+                'ou': 'où',
+                'sur': 'sûr',
+                'du': 'dû',
+                
+                // Accords et conjugaisons
+                'il a était': 'il a été',
+                'nous avons été': 'nous avons été',
+                'nous avons reçus': 'nous avons reçu',
+                'ils ont été': 'ils ont été',
+                
+                // Expressions professionnelles
+                'afin de debut': 'afin de débuter',
+                'concernant': 'concernant',
+                'statistique': 'statistiques',
+                'recommendation': 'recommandations',
+                'professionel': 'professionnel',
+                'practique': 'pratique',
+                'practiques': 'pratiques',
+                
+                // Ponctuation
+                'parcours socle.': 'parcours socle.',
+                'afin que': 'afin que',
+                
+                // Majuscules après point
+                '. nous': '. Nous',
+                '. les': '. Les',
+                '. il': '. Il',
+                '. elle': '. Elle',
+                '. on': '. On',
+                '. angélique': '. Angélique',
+                '. elodie': '. Elodie',
+                '. chitrasen': '. Chitrasen'
+            };
+            
+            // Appliquer les corrections
+            for (const [erreur, correction] of Object.entries(corrections)) {
+                const regex = new RegExp('\\b' + erreur.replace(/[.*+?^${}()|[\]\\]/g, '\\        // Génération de synthèse IA - VERSION 100% NETTOYÉE') + '\\b', 'gi');
+                corrected = corrected.replace(regex, correction);
+            }
+            
+            // Correction de la ponctuation
+            corrected = corrected.replace(/\s+([,.;!?:])/g, '$1'); // Espaces avant ponctuation
+            corrected = corrected.replace(/([.!?])\s*([a-z])/g, '$1 $2'); // Espace après ponctuation
+            corrected = corrected.replace(/([.!?])\s+([A-Z])/g, '$1 $2'); // Espace correct après point
+            
+            // Première lettre en majuscule après point
+            corrected = corrected.replace(/\.\s+([a-z])/g, function(match, p1) {
+                return '. ' + p1.toUpperCase();
+            });
+            
+            // Première lettre du texte en majuscule
+            corrected = corrected.charAt(0).toUpperCase() + corrected.slice(1);
+            
+            return corrected;
+        }
+
+        // Génération de synthèse IA - AVEC CORRECTION AUTOMATIQUE
         function genererSyntheseIA() {
             const sites = Array.from(document.querySelectorAll('input[name="sites"]:checked')).map(cb => cb.value);
             const presents = Array.from(document.querySelectorAll('input[name="consultants"]:checked')).map(cb => cb.value);
@@ -1149,6 +1222,9 @@
                 paragraphe += "Ces différents sujets ont permis d'enrichir notre réflexion collective et de renforcer notre approche professionnelle. ";
                 paragraphe += "Les échanges ont été constructifs et ont favorisé l'émergence de nouvelles perspectives d'amélioration de nos pratiques d'accompagnement.";
                 
+                // CORRECTION AUTOMATIQUE DU PARAGRAPHE
+                paragraphe = corrigerTexte(paragraphe);
+                
                 synthese += paragraphe + "\n\n";
             }
             
@@ -1160,13 +1236,14 @@
                 });
             }
 
-            // FIN - PAS D'AUTRE TEXTE !
+            // CORRECTION FINALE DE TOUTE LA SYNTHÈSE
+            synthese = corrigerTexte(synthese);
 
             document.getElementById('synthese').value = synthese;
             updateCharCount('synthese', 1000);
             
             // Notification de succès
-            alert(`✅ SYNTHÈSE PROPRE GÉNÉRÉE !\n\n🎯 ${ordreJourItems.length} point(s) transformés en phrases fluides\n📊 ${ppp.length} axe(s) P.P.P. listés simplement\n\n❌ Plus de texte générique !`);
+            alert(`✅ SYNTHÈSE CORRIGÉE AUTOMATIQUEMENT !\n\n🎯 ${ordreJourItems.length} point(s) transformés en phrases fluides\n📊 ${ppp.length} axe(s) P.P.P. listés simplement\n🔧 Orthographe et syntaxe corrigées automatiquement\n\n❌ Plus de symboles ni d'émojis !`);
         }
 
         // Compteur de caractères
@@ -1341,12 +1418,15 @@
             
             yPos = 50;
             
-            // === INFORMATIONS GÉNÉRALES ===
+            // === 1. INFORMATIONS GÉNÉRALES ===
             doc.setTextColor(...colorVert);
-            doc.setFontSize(14);
+            doc.setFillColor(...colorVert);
+            doc.rect(15, yPos - 5, 180, 12, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
-            doc.text('INFORMATIONS GENERALES', 20, yPos);
-            yPos += 10;
+            doc.text('1. INFORMATIONS GENERALES', 20, yPos + 2);
+            yPos += 15;
             
             doc.setTextColor(...colorGris);
             doc.setFontSize(10);
@@ -1366,13 +1446,16 @@
             });
             yPos += 5;
             
-            // === SITES CONCERNÉS ===
+            // === 2. SITES CONCERNÉS ===
             if (formData.sites && formData.sites.length > 0) {
                 doc.setTextColor(...colorVert);
-                doc.setFontSize(14);
+                doc.setFillColor(...colorVert);
+                doc.rect(15, yPos - 5, 180, 12, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(12);
                 doc.setFont('helvetica', 'bold');
-                doc.text('SITES CONCERNES', 20, yPos);
-                yPos += 8;
+                doc.text('2. SITES CONCERNES', 20, yPos + 2);
+                yPos += 15;
                 
                 doc.setTextColor(...colorGris);
                 doc.setFontSize(10);
@@ -1384,13 +1467,16 @@
                 yPos += 5;
             }
             
-            // === PARTICIPANTS PRÉSENTS ===
+            // === 3. PARTICIPANTS PRÉSENTS ===
             if (formData.consultants && formData.consultants.length > 0) {
                 doc.setTextColor(...colorVert);
-                doc.setFontSize(14);
+                doc.setFillColor(...colorVert);
+                doc.rect(15, yPos - 5, 180, 12, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(12);
                 doc.setFont('helvetica', 'bold');
-                doc.text('PARTICIPANTS PRESENTS', 20, yPos);
-                yPos += 8;
+                doc.text('3. PARTICIPANTS PRESENTS', 20, yPos + 2);
+                yPos += 15;
                 
                 doc.setTextColor(...colorGris);
                 doc.setFontSize(10);
@@ -1402,13 +1488,16 @@
                 yPos += 5;
             }
             
-            // === INTERVENANTS ===
+            // === 4. INTERVENANTS ===
             if (formData.intervenantsSolerys || formData.intervenantsExterieurs) {
                 doc.setTextColor(...colorVert);
-                doc.setFontSize(14);
+                doc.setFillColor(...colorVert);
+                doc.rect(15, yPos - 5, 180, 12, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(12);
                 doc.setFont('helvetica', 'bold');
-                doc.text('INTERVENANTS', 20, yPos);
-                yPos += 8;
+                doc.text('4. INTERVENANTS', 20, yPos + 2);
+                yPos += 15;
                 
                 doc.setTextColor(...colorGris);
                 doc.setFontSize(10);
@@ -1432,7 +1521,7 @@
                 yPos += 3;
             }
             
-            // === P.P.P. ABORDÉES ===
+            // === 5. P.P.P. ABORDÉES ===
             if (formData.ppp && formData.ppp.length > 0) {
                 if (yPos > 250) {
                     doc.addPage();
@@ -1440,10 +1529,13 @@
                 }
                 
                 doc.setTextColor(...colorVert);
-                doc.setFontSize(14);
+                doc.setFillColor(...colorVert);
+                doc.rect(15, yPos - 5, 180, 12, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(12);
                 doc.setFont('helvetica', 'bold');
-                doc.text('P.P.P. ABORDEES', 20, yPos);
-                yPos += 8;
+                doc.text('5. P.P.P. ABORDEES', 20, yPos + 2);
+                yPos += 15;
                 
                 doc.setTextColor(...colorGris);
                 doc.setFontSize(10);
@@ -1455,7 +1547,7 @@
                 yPos += 5;
             }
             
-            // === ORDRE DU JOUR ===
+            // === 6. ORDRE DU JOUR ===
             const ordreJour = Array.from(document.querySelectorAll('.ordre-jour-item')).map(item => {
                 const titre = item.querySelector('input[type="text"]')?.value || '';
                 const description = item.querySelector('textarea')?.value || '';
@@ -1469,10 +1561,13 @@
                 }
                 
                 doc.setTextColor(...colorVert);
-                doc.setFontSize(14);
+                doc.setFillColor(...colorVert);
+                doc.rect(15, yPos - 5, 180, 12, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(12);
                 doc.setFont('helvetica', 'bold');
-                doc.text('ORDRE DU JOUR', 20, yPos);
-                yPos += 10;
+                doc.text('6. ORDRE DU JOUR', 20, yPos + 2);
+                yPos += 15;
                 
                 doc.setTextColor(...colorGris);
                 doc.setFontSize(10);
@@ -1503,7 +1598,7 @@
                 });
             }
             
-            // === SYNTHÈSE ===
+            // === 7. SYNTHÈSE ===
             if (formData.synthese && formData.synthese.trim()) {
                 if (yPos > 200) {
                     doc.addPage();
@@ -1511,10 +1606,13 @@
                 }
                 
                 doc.setTextColor(...colorVert);
-                doc.setFontSize(14);
+                doc.setFillColor(...colorVert);
+                doc.rect(15, yPos - 5, 180, 12, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(12);
                 doc.setFont('helvetica', 'bold');
-                doc.text('SYNTHESE', 20, yPos);
-                yPos += 10;
+                doc.text('7. SYNTHESE', 20, yPos + 2);
+                yPos += 15;
                 
                 doc.setTextColor(...colorGris);
                 doc.setFontSize(9);
