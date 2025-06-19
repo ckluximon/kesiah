@@ -1114,7 +1114,7 @@
             let synthese = "SYNTHÈSE DE LA SESSION DE PARTAGES DES PRATIQUES PROFESSIONNELLES\n\n";
             
             // CONTEXTE ET PARTICIPATION
-            synthese += "📋 CONTEXTE ET PARTICIPATION\n";
+            synthese += "CONTEXTE ET PARTICIPATION\n";
             if (sites.length > 0) {
                 synthese += `Cette session P.P.P. a réuni les équipes d'accompagnement de ${sites.length} site(s) : ${sites.join(', ')}. `;
             }
@@ -1125,7 +1125,7 @@
             
             // SYNTHÈSE RÉDIGÉE EN PHRASES FLUIDES
             if (ordreJourItems.length > 0) {
-                synthese += "🎯 SYNTHÈSE DES ÉCHANGES\n";
+                synthese += "SYNTHESE DES ECHANGES\n";
                 
                 // Créer un paragraphe fluide basé sur les points
                 let paragraphe = "";
@@ -1154,7 +1154,7 @@
             
             // P.P.P. - UNIQUEMENT LA LISTE DES CASES COCHÉES
             if (ppp.length > 0) {
-                synthese += "📊 THÉMATIQUES P.P.P. ABORDÉES\n";
+                synthese += "THEMATIQUES P.P.P. ABORDEES\n";
                 ppp.forEach(theme => {
                     synthese += `• ${theme}\n`;
                 });
@@ -1345,7 +1345,7 @@
             doc.setTextColor(...colorVert);
             doc.setFontSize(14);
             doc.setFont('helvetica', 'bold');
-            doc.text('📋 Informations générales', 20, yPos);
+            doc.text('INFORMATIONS GENERALES', 20, yPos);
             yPos += 10;
             
             doc.setTextColor(...colorGris);
@@ -1371,7 +1371,7 @@
                 doc.setTextColor(...colorVert);
                 doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
-                doc.text('🏢 Sites concernés', 20, yPos);
+                doc.text('SITES CONCERNES', 20, yPos);
                 yPos += 8;
                 
                 doc.setTextColor(...colorGris);
@@ -1389,7 +1389,7 @@
                 doc.setTextColor(...colorVert);
                 doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
-                doc.text('👥 Participants présents', 20, yPos);
+                doc.text('PARTICIPANTS PRESENTS', 20, yPos);
                 yPos += 8;
                 
                 doc.setTextColor(...colorGris);
@@ -1407,7 +1407,7 @@
                 doc.setTextColor(...colorVert);
                 doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
-                doc.text('🎯 Intervenants', 20, yPos);
+                doc.text('INTERVENANTS', 20, yPos);
                 yPos += 8;
                 
                 doc.setTextColor(...colorGris);
@@ -1442,7 +1442,7 @@
                 doc.setTextColor(...colorVert);
                 doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
-                doc.text('📊 P.P.P. abordées', 20, yPos);
+                doc.text('P.P.P. ABORDEES', 20, yPos);
                 yPos += 8;
                 
                 doc.setTextColor(...colorGris);
@@ -1471,7 +1471,7 @@
                 doc.setTextColor(...colorVert);
                 doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
-                doc.text('📝 Ordre du jour', 20, yPos);
+                doc.text('ORDRE DU JOUR', 20, yPos);
                 yPos += 10;
                 
                 doc.setTextColor(...colorGris);
@@ -1513,7 +1513,7 @@
                 doc.setTextColor(...colorVert);
                 doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
-                doc.text('📄 Synthèse', 20, yPos);
+                doc.text('SYNTHESE', 20, yPos);
                 yPos += 10;
                 
                 doc.setTextColor(...colorGris);
