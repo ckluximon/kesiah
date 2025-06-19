@@ -1098,7 +1098,7 @@
             this.classList.remove('dragging');
         }
 
-        // Génération de synthèse IA - VERSION RÉDIGÉE
+        // Génération de synthèse IA - VRAIES PHRASES CONSTRUITES
         function genererSyntheseIA() {
             const sites = Array.from(document.querySelectorAll('input[name="sites"]:checked')).map(cb => cb.value);
             const presents = Array.from(document.querySelectorAll('input[name="consultants"]:checked')).map(cb => cb.value);
@@ -1123,35 +1123,36 @@
                 synthese += `La participation active de ${presents.length} consultant(s) en insertion professionnelle a favorisé des échanges constructifs et un partage d'expériences enrichissant.\n\n`;
             }
             
-            // POINTS ABORDÉS - RÉDACTION FLUIDE ET PROFESSIONNELLE
+            // SYNTHÈSE RÉDIGÉE EN PHRASES FLUIDES
             if (ordreJourItems.length > 0) {
                 synthese += "🎯 SYNTHÈSE DES ÉCHANGES\n";
                 
-                // Introduction
-                synthese += `Au cours de cette session, ${ordreJourItems.length} thématique${ordreJourItems.length > 1 ? 's ont été' : ' a été'} développée${ordreJourItems.length > 1 ? 's' : ''} et analysée${ordreJourItems.length > 1 ? 's' : ''} collectivement.\n\n`;
+                // Créer un paragraphe fluide basé sur les points
+                let paragraphe = "";
                 
-                // Rédaction des points en phrases construites
                 ordreJourItems.forEach((item, index) => {
                     if (index === 0) {
-                        synthese += `Nous avons d'abord abordé la question de "${item.titre.toLowerCase()}"`;
-                    } else if (index === ordreJourItems.length - 1 && ordreJourItems.length > 1) {
-                        synthese += ` Enfin, notre attention s'est portée sur "${item.titre.toLowerCase()}"`;
+                        paragraphe += `Durant cette session, nous avons principalement travaillé sur ${item.titre.toLowerCase()}`;
+                        if (item.description) {
+                            paragraphe += ` afin de ${item.description.toLowerCase()}`;
+                        }
+                        paragraphe += ". ";
                     } else {
-                        synthese += ` Par ailleurs, nos échanges ont porté sur "${item.titre.toLowerCase()}"`;
+                        paragraphe += `Nous avons également abordé ${item.titre.toLowerCase()}`;
+                        if (item.description) {
+                            paragraphe += ` dans le but de ${item.description.toLowerCase()}`;
+                        }
+                        paragraphe += ". ";
                     }
-                    
-                    if (item.description) {
-                        synthese += `, nous permettant d'examiner ${item.description.toLowerCase()}`;
-                    }
-                    
-                    synthese += `. Cette discussion a enrichi notre réflexion collective et nous a permis d'identifier des axes d'amélioration concrets.\n\n`;
                 });
                 
-                // Conclusion des échanges
-                synthese += `L'ensemble de ces échanges a favorisé une meilleure compréhension des enjeux professionnels et a renforcé notre cohésion d'équipe autour des pratiques d'accompagnement.\n\n`;
+                paragraphe += "Ces différents sujets ont permis d'enrichir notre réflexion collective et de renforcer notre approche professionnelle. ";
+                paragraphe += "Les échanges ont été constructifs et ont favorisé l'émergence de nouvelles perspectives d'amélioration de nos pratiques d'accompagnement.";
+                
+                synthese += paragraphe + "\n\n";
             }
             
-            // THÉMATIQUES P.P.P. - SIMPLE LISTE
+            // P.P.P. - JUSTE LA LISTE SIMPLE
             if (ppp.length > 0) {
                 synthese += "📊 THÉMATIQUES P.P.P. ABORDÉES\n";
                 ppp.forEach(theme => {
@@ -1163,7 +1164,7 @@
             updateCharCount('synthese', 1000);
             
             // Notification de succès
-            alert(`✅ SYNTHÈSE RÉDIGÉE AVEC SUCCÈS !\n\n🎯 ${ordreJourItems.length} point(s) de votre ordre du jour développés\n📊 ${ppp.length} axe(s) P.P.P. listés\n\nLa synthèse est rédigée en phrases construites !`);
+            alert(`✅ SYNTHÈSE RÉDIGÉE AVEC SUCCÈS !\n\n🎯 ${ordreJourItems.length} point(s) transformés en phrases fluides\n📊 ${ppp.length} axe(s) P.P.P. listés simplement`);
         }
 
         // Compteur de caractères
